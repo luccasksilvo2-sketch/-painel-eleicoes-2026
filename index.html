@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111f">
 <title>Eleições 2026 — Pará + Presidente</title>
+<meta name="app-version" content="2026-10-04-percentuais-fix-v2">
 <style>
 :root{--bg:#050a12;--p:#0c1523;--p2:#111d2e;--line:#22324a;--line2:#314867;--txt:#eef5ff;--mut:#95a4ba;--blue:#4ba3ff;--ok:#32d583;--err:#ff6b6b;--lula:#d46a6a;--lula2:#7e2c38;--fla:#4ba3ff;--fla2:#174b82;--other:#b7c0cd;--other2:#3a4658;--gold:#d7b463}
 *{box-sizing:border-box}html{background:var(--bg);color-scheme:dark}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07111f 0,#050a12 38%);color:var(--txt)}
@@ -177,8 +178,29 @@ const PRES_UFS=[
 const S={active:'pres',data:{},idg:{},seconds:10,states:{},stateIdg:{},selectedUf:'ba'};
 const $=id=>document.getElementById(id);
 const num=v=>Number(String(v??'0').replace(/\./g,'').replace(',','.'))||0;
+// O TSE costuma enviar percentuais em centésimos (ex.: "9902" = 99,02%)
+// e, em alguns pontos, pode haver decimal já convertido. Esta função trata os dois formatos.
+const pnum=v=>{
+  if(v==null||v==='')return 0;
+  if(typeof v==='number'){
+    if(!Number.isFinite(v))return 0;
+    return Math.abs(v)>100?v/100:v;
+  }
+  let x=String(v).trim().replace('%','');
+  if(!x)return 0;
+  if(x.includes(',')){
+    const n=Number(x.replace(/\./g,'').replace(',','.'));
+    return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0;
+  }
+  if(x.includes('.')){
+    const n=Number(x);
+    if(Number.isFinite(n))return Math.abs(n)>100?n/100:n;
+  }
+  const n=Number(x.replace(/[^0-9-]/g,''));
+  return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0;
+};
 const int=v=>new Intl.NumberFormat('pt-BR').format(Number(v||0));
-const pct=v=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(num(v))+'%';
+const pct=v=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(pnum(v))+'%';
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
 const endpoint=r=>`${BASE}/${r.e}/dados/${r.uf}/${r.uf}-c${r.c}-e${String(r.e).padStart(6,'0')}-u.json`;
@@ -192,18 +214,18 @@ function duelDiff(lulaVotes,flavioVotes){const l=num(lulaVotes),f=num(flavioVote
 function shortLeaderName(c){if(!c)return 'Sem dados'; if(findLula([c]))return 'Lula'; if(findFlavio([c]))return 'Flávio'; return c.nmu||c.nm||'Outro';}
 function buildStateInfo(meta,d){if(!d)return {...meta,loaded:false,leader:null,leaderType:'outro',totalPct:0,totalVotes:0,lulaVotes:0,lulaPct:0,flavioVotes:0,flavioPct:0,all:[]};
   const all=candidates(d); const leader=all[0]||null; const lula=findLula(all); const flavio=findFlavio(all);
-  return {...meta,loaded:true,raw:d,all,leader,leaderType:leaderKey(leader),leaderShort:shortLeaderName(leader),totalPct:num(d.s?.pst||0),totalVotes:num(d.v?.tv||0),sectionsDone:num(d.s?.st||0),sectionsTotal:num(d.s?.ts||0),updatedTime:d.ht||d.hg||'—',updatedDate:d.dt||d.dg||'—',status:d.and||'',lula:lula||null,lulaVotes:num(lula?.vap||0),lulaPct:num(lula?.pvap||0),flavio:flavio||null,flavioVotes:num(flavio?.vap||0),flavioPct:num(flavio?.pvap||0)};
+  return {...meta,loaded:true,raw:d,all,leader,leaderType:leaderKey(leader),leaderShort:shortLeaderName(leader),totalPct:pnum(d.s?.pst||0),totalVotes:num(d.v?.tv||0),sectionsDone:num(d.s?.st||0),sectionsTotal:num(d.s?.ts||0),updatedTime:d.ht||d.hg||'—',updatedDate:d.dt||d.dg||'—',status:d.and||'',lula:lula||null,lulaVotes:num(lula?.vap||0),lulaPct:pnum(lula?.pvap||0),flavio:flavio||null,flavioVotes:num(flavio?.vap||0),flavioPct:pnum(flavio?.pvap||0)};
 }
 function render(){
   const r=RACES.find(x=>x.id===S.active),d=S.data[r.id];
   $('title').textContent=r.title;
   if(!d){$('meta').textContent=r.scope;$('message').className='notice';$('message').textContent='Aguardando dados do TSE…';$('list').innerHTML='';$('nationalDiff').className='notice hidden';$('nationalDiff').textContent='';metrics(null,[]);toggleMap(false);$('turnoutPanel').classList.add('hidden');$('regionSummaryPanel').classList.add('hidden');return}
-  const all=candidates(d),q=$('search').value.trim().toLocaleLowerCase('pt-BR'),shown=q?all.filter(c=>[c.nmu,c.nm,c.n,c.party,c.partyName].some(v=>String(v??'').toLocaleLowerCase('pt-BR').includes(q))):all,p=num(d.s?.pst||0),cargo=(d.carg||[])[0]||{};
+  const all=candidates(d),q=$('search').value.trim().toLocaleLowerCase('pt-BR'),shown=q?all.filter(c=>[c.nmu,c.nm,c.n,c.party,c.partyName].some(v=>String(v??'').toLocaleLowerCase('pt-BR').includes(q))):all,p=pnum(d.s?.pst||0),cargo=(d.carg||[])[0]||{};
   const nd=$('nationalDiff'); if(r.id==='pres'){const lc=findLula(all),fc=findFlavio(all),dd=duelDiff(lc?.vap||0,fc?.vap||0); nd.className='notice'; nd.innerHTML=`<strong>Diferença Lula x Flávio:</strong> ${dd.leader==='Empate'?'empate em votos':`${esc(dd.leader)} está ${int(dd.diff)} votos à frente`} • Lula ${int(lc?.vap||0)} • Flávio ${int(fc?.vap||0)}`;} else {nd.className='notice hidden'; nd.textContent='';}
   $('meta').textContent=`${r.scope} • ${pct(p)} das seções • ${d.and==='f'?'finalizado':d.and==='p'?'parcial':'não iniciado'}`;
   $('progressBar').style.width=Math.max(0,Math.min(100,p))+'%';
   $('message').classList.add('hidden');
-  if(!shown.length){$('list').innerHTML='<div class="empty">Nenhum candidato encontrado.</div>'}else{$('list').innerHTML=shown.map((c,i)=>{const cp=companions(c),rank=q?all.indexOf(c)+1:i+1,pv=Math.max(0,Math.min(100,num(c.pvap)));return `<article class="cand"><div class="rank">${rank}º</div><div><div class="name">${esc(c.nmu||c.nm||'Candidato')} ${c.st?`<span class="chip">${esc(c.st)}</span>`:''}</div><div class="details"><span>Nº ${esc(c.n)}</span><span>•</span><span>${esc(c.party||'Partido não informado')}</span>${cp?`<span>•</span><span>${esc(cp)}</span>`:''}</div><div class="bar"><i style="width:${pv}%"></i></div></div><div class="votes"><strong>${int(c.vap)}</strong><div class="pct">${pct(c.pvap)}</div></div></article>`}).join('')}
+  if(!shown.length){$('list').innerHTML='<div class="empty">Nenhum candidato encontrado.</div>'}else{$('list').innerHTML=shown.map((c,i)=>{const cp=companions(c),rank=q?all.indexOf(c)+1:i+1,pv=Math.max(0,Math.min(100,pnum(c.pvap)));return `<article class="cand"><div class="rank">${rank}º</div><div><div class="name">${esc(c.nmu||c.nm||'Candidato')} ${c.st?`<span class="chip">${esc(c.st)}</span>`:''}</div><div class="details"><span>Nº ${esc(c.n)}</span><span>•</span><span>${esc(c.party||'Partido não informado')}</span>${cp?`<span>•</span><span>${esc(cp)}</span>`:''}</div><div class="bar"><i style="width:${pv}%"></i></div></div><div class="votes"><strong>${int(c.vap)}</strong><div class="pct">${pct(c.pvap)}</div></div></article>`}).join('')}
   metrics(d,all,cargo);
   toggleMap(r.id==='pres');
   renderTurnout();
