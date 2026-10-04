@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>Eleições 2026 — Pará + Presidente</title>
+<style>
+:root{--bg:#050a12;--p:#0c1523;--p2:#111d2e;--line:#22324a;--txt:#eef5ff;--mut:#95a4ba;--blue:#4ba3ff;--ok:#32d583;--err:#ff6b6b}
+*{box-sizing:border-box}html{background:var(--bg);color-scheme:dark}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07111f 0,#050a12 38%);color:var(--txt)}
+.wrap{max-width:1120px;margin:auto;padding:16px 14px 56px}header{position:sticky;top:0;z-index:20;background:rgba(5,10,18,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.header{max-width:1120px;margin:auto;padding:13px 14px;display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}h1{font-size:clamp(21px,4vw,31px);margin:0;letter-spacing:-.03em}.sub{font-size:12px;color:var(--mut);margin-top:4px}.live{font-size:12px;color:var(--mut);display:flex;gap:8px;align-items:center}.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 5px rgba(50,213,131,.12)}.dot.err{background:var(--err);box-shadow:0 0 0 5px rgba(255,107,107,.12)}
+.tabs{display:flex;gap:8px;overflow:auto;padding:4px 0 12px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}button,a.btn{border:1px solid var(--line);background:var(--p);color:var(--txt);padding:10px 12px;border-radius:12px;font-weight:700;font-size:13px;white-space:nowrap;text-decoration:none}button.active{background:#16375d;border-color:#316ca8}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.card{border:1px solid var(--line);background:linear-gradient(180deg,var(--p2),var(--p));border-radius:17px;padding:14px}.label{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--mut)}.value{font-size:22px;font-weight:850;margin-top:4px;font-variant-numeric:tabular-nums}.hint{font-size:11px;color:var(--mut);margin-top:3px}.race{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}.race h2{margin:0;font-size:20px}.meta{font-size:12px;color:var(--mut);margin-top:5px}.controls{display:flex;gap:8px;flex-wrap:wrap}input{min-width:260px;max-width:100%;background:#06101d;border:1px solid var(--line);color:var(--txt);border-radius:11px;padding:10px 12px}.progress{height:9px;background:#06101d;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:12px 0 8px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#79d6ff);transition:width .35s}.notice{padding:12px;border:1px dashed #36506d;background:#08111d;border-radius:12px;color:var(--mut);font-size:12px;line-height:1.45;margin:10px 0}.notice.err{border-color:#73343c;color:#ffd2d2;background:#251116}.hidden{display:none!important}
+.cand{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 2px;border-top:1px solid var(--line)}.cand:first-child{border-top:0}.rank{font-weight:850;text-align:center;color:var(--mut)}.name{font-size:15px;font-weight:800;line-height:1.2}.details{display:flex;gap:7px;flex-wrap:wrap;color:var(--mut);font-size:11px;margin-top:4px}.bar{height:5px;background:#07101b;border-radius:999px;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;background:var(--blue)}.votes{text-align:right;min-width:105px}.votes strong{font-size:16px;font-variant-numeric:tabular-nums}.pct{font-size:12px;color:#81c8ff;font-weight:800;margin-top:2px}.chip{font-size:10px;padding:2px 6px;border:1px solid var(--line);border-radius:999px;color:#d9e4f3}.empty{text-align:center;color:var(--mut);padding:34px 8px}footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.55;margin-top:18px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cand{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}.votes{min-width:88px}.votes strong{font-size:14px}.name{font-size:14px}.controls{width:100%}input{width:100%;min-width:0}.controls button{width:100%}}
+</style>
+</head>
+<body>
+<header><div class="header"><div><h1>Eleições 2026 — Pará + Presidente</h1><div class="sub">Resultados oficiais do TSE • 1º turno • atualização a cada 10 segundos</div></div><div class="live"><span id="dot" class="dot"></span><span id="status">Conectando ao TSE…</span><span>•</span><span id="timer">10s</span></div></div></header>
+<main class="wrap">
+<div id="tabs" class="tabs"></div>
+<section class="grid">
+<div class="card"><div class="label">Seções totalizadas</div><div id="mProgress" class="value">—</div><div id="mSections" class="hint">aguardando</div></div>
+<div class="card"><div class="label">Votos computados</div><div id="mVotes" class="value">—</div><div class="hint">informado pelo TSE</div></div>
+<div class="card"><div class="label">Candidatos</div><div id="mCandidates" class="value">—</div><div id="mVacancies" class="hint">—</div></div>
+<div class="card"><div class="label">Atualização TSE</div><div id="mTime" class="value">—</div><div id="mDate" class="hint">—</div></div>
+</section>
+<section class="card">
+<div class="race"><div><h2 id="title">—</h2><div id="meta" class="meta">—</div></div><div class="controls"><input id="search" placeholder="Buscar candidato, número ou partido" autocomplete="off"><button id="refresh">Atualizar agora</button></div></div>
+<div class="progress"><i id="progressBar"></i></div>
+<div id="message" class="notice">Carregando dados oficiais…</div>
+<div id="list"></div>
+</section>
+<footer>Fonte: arquivos públicos de Divulgação de Resultados do Tribunal Superior Eleitoral (TSE), formato EA20. Este painel apenas reproduz os dados oficiais recebidos e não faz projeção eleitoral. Em caso de divergência, prevalece o portal oficial do TSE.</footer>
+</main>
+<script>
+(()=>{
+'use strict';
+const BASE='https://resultados.tse.jus.br/oficial/ele2026';
+const RACES=[
+{id:'pres',label:'Presidente',title:'Presidente da República — Brasil',scope:'Brasil + exterior',e:'6257',uf:'br',c:'0001'},
+{id:'gov',label:'Governador',title:'Governador — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0003'},
+{id:'sen',label:'Senador',title:'Senador — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0005'},
+{id:'df',label:'Dep. Federal',title:'Deputado Federal — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0006'},
+{id:'de',label:'Dep. Estadual',title:'Deputado Estadual — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0007'}];
+const S={active:'pres',data:{},idg:{},seconds:10};
+const $=id=>document.getElementById(id);
+const num=v=>Number(String(v??'0').replace(/\./g,'').replace(',','.'))||0;
+const int=v=>new Intl.NumberFormat('pt-BR').format(Number(v||0));
+const pct=v=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(num(v))+'%';
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const endpoint=r=>`${BASE}/${r.e}/dados/${r.uf}/${r.uf}-c${r.c}-e${String(r.e).padStart(6,'0')}-u.json`;
+function candidates(d){const out=[];const cargo=(d?.carg||[])[0];for(const agr of (cargo?.agr||[])){for(const par of (agr?.par||[])){for(const c of (par?.cand||[])){out.push({...c,party:par.sg||'',partyName:par.nm||'',group:agr.nm||''});}}}return out.sort((a,b)=>num(b.vap)-num(a.vap)||num(a.seq)-num(b.seq)||String(a.nmu||a.nm).localeCompare(String(b.nmu||b.nm),'pt-BR'));}
+function companions(c){return (c.vs||[]).map(x=>`${x.tp==='v'?'Vice':x.tp==='s1'?'1º suplente':x.tp==='s2'?'2º suplente':'Composição'}: ${x.nmu||x.nm||''}`).join(' • ')}
+function render(){const r=RACES.find(x=>x.id===S.active),d=S.data[r.id];$('title').textContent=r.title;if(!d){$('meta').textContent=r.scope;$('message').className='notice';$('message').textContent='Aguardando dados do TSE…';$('list').innerHTML='';metrics(null,[]);return}const all=candidates(d),q=$('search').value.trim().toLocaleLowerCase('pt-BR'),shown=q?all.filter(c=>[c.nmu,c.nm,c.n,c.party,c.partyName].some(v=>String(v??'').toLocaleLowerCase('pt-BR').includes(q))):all,p=num(d.s?.pst||0),cargo=(d.carg||[])[0]||{};$('meta').textContent=`${r.scope} • ${pct(p)} das seções • ${d.and==='f'?'finalizado':d.and==='p'?'parcial':'não iniciado'}`;$('progressBar').style.width=Math.max(0,Math.min(100,p))+'%';$('message').classList.add('hidden');if(!shown.length){$('list').innerHTML='<div class="empty">Nenhum candidato encontrado.</div>'}else{$('list').innerHTML=shown.map((c,i)=>{const cp=companions(c),rank=q?all.indexOf(c)+1:i+1,pv=Math.max(0,Math.min(100,num(c.pvap)));return `<article class="cand"><div class="rank">${rank}º</div><div><div class="name">${esc(c.nmu||c.nm||'Candidato')} ${c.st?`<span class="chip">${esc(c.st)}</span>`:''}</div><div class="details"><span>Nº ${esc(c.n)}</span><span>•</span><span>${esc(c.party||'Partido não informado')}</span>${cp?`<span>•</span><span>${esc(cp)}</span>`:''}</div><div class="bar"><i style="width:${pv}%"></i></div></div><div class="votes"><strong>${int(c.vap)}</strong><div class="pct">${pct(c.pvap)}</div></div></article>`}).join('')}metrics(d,all,cargo)}
+function metrics(d,all=[],cargo={}){if(!d){for(const id of ['mProgress','mVotes','mCandidates','mTime','mDate'])$(id).textContent='—';$('mSections').textContent='aguardando';$('mVacancies').textContent='—';$('progressBar').style.width='0';return}$('mProgress').textContent=pct(d.s?.pst||0);$('mSections').textContent=`${int(d.s?.st||0)} de ${int(d.s?.ts||0)} seções`;$('mVotes').textContent=int(d.v?.tv||0);$('mCandidates').textContent=int(all.length);const nv=Number(cargo.nv||0);$('mVacancies').textContent=nv?`${nv} ${nv===1?'vaga':'vagas'} no cargo`:'—';$('mTime').textContent=d.ht||d.hg||'—';$('mDate').textContent=d.dt||d.dg||'—'}
+async function load(r,force=false){const url=endpoint(r)+'?v='+Date.now();const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`${r.label}: HTTP ${res.status}`);const d=await res.json();if(force||S.idg[r.id]!==d.idg){S.data[r.id]=d;S.idg[r.id]=d.idg;if(S.active===r.id)render()}return d}
+async function refresh(force=false){$('refresh').disabled=true;$('status').textContent='Atualizando…';const result=await Promise.allSettled(RACES.map(r=>load(r,force)));const ok=result.filter(x=>x.status==='fulfilled').length;if(ok){$('dot').className='dot';$('status').textContent=`TSE conectado • ${ok}/${RACES.length}`;if(S.data[S.active])render()}else{$('dot').className='dot err';$('status').textContent='Falha ao acessar o TSE';const reasons=result.map(x=>x.status==='rejected'?x.reason?.message:'').filter(Boolean).join(' | ');$('message').className='notice err';$('message').innerHTML=`Não foi possível receber os arquivos oficiais agora. <br><small>${esc(reasons||'Falha de rede ou política do navegador.')}</small>`}$('refresh').disabled=false;S.seconds=10;$('timer').textContent='10s'}
+function tabs(){$('tabs').innerHTML=RACES.map(r=>`<button data-id="${r.id}" class="${r.id===S.active?'active':''}">${r.label}</button>`).join('');$('tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;S.active=b.dataset.id;$('search').value='';[...$('tabs').children].forEach(x=>x.classList.toggle('active',x.dataset.id===S.active));render()})}
+$('search').addEventListener('input',render);$('refresh').addEventListener('click',()=>refresh(true));tabs();render();refresh(true);setInterval(()=>{S.seconds=Math.max(0,S.seconds-1);$('timer').textContent=S.seconds+'s';if(S.seconds===0)refresh(false)},1000);
+})();
+</script>
+</body>
+</html>
