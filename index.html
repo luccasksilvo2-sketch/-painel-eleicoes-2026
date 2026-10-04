@@ -32,9 +32,10 @@ button.active{background:#16375d;border-color:#316ca8}
 .sidePanel{display:flex;flex-direction:column;gap:10px}.detailState{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:14px}.detailState h4{margin:0;font-size:18px}.detailMeta{font-size:12px;color:var(--mut);margin-top:5px}.miniGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.miniCard{border:1px solid var(--line);background:#0b1523;border-radius:14px;padding:10px}.miniCard .miniLabel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.miniCard .miniValue{font-size:20px;font-weight:850;margin-top:4px;font-variant-numeric:tabular-nums}.miniCard .miniHint{font-size:11px;color:var(--mut);margin-top:4px}.duel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.duelBox{border:1px solid var(--line);border-radius:14px;padding:11px;background:#0b1523}.duelBox h5{margin:0;font-size:14px}.duelBox .dv{font-size:18px;font-weight:850;margin-top:6px;font-variant-numeric:tabular-nums}.duelBox .dp{font-size:12px;margin-top:3px}.duelBox.lula{border-color:rgba(212,106,106,.35)}.duelBox.flavio{border-color:rgba(75,163,255,.35)}
 .regionCard{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:14px}.regionCard h4{margin:0;font-size:16px}.regionRows{margin-top:10px}.regionRow{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}.regionRow:first-child{border-top:0}.regionRow .ufname{font-size:13px;font-weight:700}.regionRow .ufmeta{font-size:11px;color:var(--mut);margin-top:3px}.regionRow .leadVal{text-align:right}.regionRow .leadVal strong{font-size:13px}.regionRow .leadVal div{font-size:11px;color:var(--mut);margin-top:3px}
 .allStates{margin-top:12px;border:1px solid var(--line);border-radius:16px;overflow:hidden}.allHeader,.allRow{display:grid;grid-template-columns:64px minmax(120px,1.1fr) 82px 110px 120px 120px 130px;gap:10px;align-items:center;padding:10px 12px}.allHeader{background:#0a1523;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}.allBody{background:#08111d}.allRow{border-top:1px solid var(--line);font-size:13px}.allRow:first-child{border-top:0}.allRow.nordeste{background:rgba(215,180,99,.06)}.stateName strong{display:block}.stateName small{display:block;color:var(--mut);margin-top:3px}.leaderBadge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;border:1px solid var(--line);font-size:11px;font-weight:700}.leaderBadge.lula{border-color:rgba(212,106,106,.35);color:#ffd8d8}.leaderBadge.flavio{border-color:rgba(75,163,255,.35);color:#d6ebff}.leaderBadge.other{border-color:rgba(183,192,205,.28);color:#edf4ff}.muted{color:var(--mut)}
+.turnoutPanel{margin-bottom:14px}.turnoutHeader{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.turnoutHeader h3{margin:0;font-size:19px}.turnoutGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.turnoutCard{border:1px solid var(--line);background:#08111d;border-radius:15px;padding:12px}.turnoutCard .tLabel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.turnoutCard .tValue{font-size:20px;font-weight:850;margin-top:5px;font-variant-numeric:tabular-nums}.turnoutCard .tHint{font-size:11px;color:var(--mut);margin-top:4px}.turnoutNote{margin-top:10px;font-size:11px;color:var(--mut);line-height:1.45}.turnoutBar{height:7px;background:#06101d;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:8px}.turnoutBar i{display:block;height:100%;background:linear-gradient(90deg,#55b6ff,#77e1bd)}
 footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.55;margin-top:18px}
 @media(max-width:960px){.mapWrap{grid-template-columns:1fr}.sidePanel{order:2}.tileMapBox{order:1}.allStates{overflow:auto}.allHeader,.allBody{min-width:860px}}
-@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cand{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}.votes{min-width:88px}.votes strong{font-size:14px}.name{font-size:14px}.controls{width:100%}input{width:100%;min-width:0}.controls button{width:100%}.miniGrid,.duel{grid-template-columns:1fr}.mapCardHeader{align-items:flex-start}}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.turnoutGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.cand{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}.votes{min-width:88px}.votes strong{font-size:14px}.name{font-size:14px}.controls{width:100%}input{width:100%;min-width:0}.controls button{width:100%}.miniGrid,.duel{grid-template-columns:1fr}.mapCardHeader{align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -46,6 +47,25 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.55;margin
 <div class="card"><div class="label">Votos computados</div><div id="mVotes" class="value">—</div><div class="hint">informado pelo TSE</div></div>
 <div class="card"><div class="label">Candidatos</div><div id="mCandidates" class="value">—</div><div id="mVacancies" class="hint">—</div></div>
 <div class="card"><div class="label">Atualização TSE</div><div id="mTime" class="value">—</div><div id="mDate" class="hint">—</div></div>
+</section>
+<section id="turnoutPanel" class="card turnoutPanel hidden">
+  <div class="turnoutHeader">
+    <div>
+      <h3>Eleitorado e comparecimento — Brasil</h3>
+      <div class="mapSub">Soma das 27 UFs para Presidente • atualização junto com a apuração</div>
+    </div>
+  </div>
+  <div class="turnoutGrid">
+    <div class="turnoutCard"><div class="tLabel">Eleitores aptos</div><div id="tElectorate" class="tValue">—</div><div id="tElectorateHint" class="tHint">Brasil, 27 UFs</div></div>
+    <div class="turnoutCard"><div class="tLabel">Comparecimento apurado</div><div id="tTurnout" class="tValue">—</div><div id="tTurnoutPct" class="tHint">—</div><div class="turnoutBar"><i id="tTurnoutBar" style="width:0"></i></div></div>
+    <div class="turnoutCard"><div class="tLabel">Abstenções apuradas</div><div id="tAbst" class="tValue">—</div><div id="tAbstPct" class="tHint">—</div></div>
+    <div class="turnoutCard"><div class="tLabel">Votos computados</div><div id="tVotes" class="tValue">—</div><div class="tHint">para Presidente nas UFs já totalizadas</div></div>
+    <div class="turnoutCard"><div class="tLabel">Eleitorado já totalizado</div><div id="tReached" class="tValue">—</div><div id="tReachedPct" class="tHint">—</div></div>
+    <div class="turnoutCard"><div class="tLabel">Ainda em seções não totalizadas</div><div id="tPending" class="tValue">—</div><div id="tPendingPct" class="tHint">—</div></div>
+    <div class="turnoutCard"><div class="tLabel">Comparecimento − votos computados</div><div id="tTurnoutVoteGap" class="tValue">—</div><div class="tHint">diferença entre quem compareceu e os votos do cargo já computados</div></div>
+    <div class="turnoutCard"><div class="tLabel">Brasil + exterior</div><div id="tNationalElectorate" class="tValue">—</div><div id="tNationalHint" class="tHint">arquivo nacional do TSE</div></div>
+  </div>
+  <div class="turnoutNote"><strong>Importante:</strong> durante a apuração, comparecimento e abstenção só são conhecidos nas seções já totalizadas. Portanto, “eleitores aptos − comparecimento” ainda não representa a abstenção nacional final enquanto a totalização não chegar a 100%.</div>
 </section>
 <section class="card">
 <div class="race"><div><h2 id="title">—</h2><div id="meta" class="meta">—</div></div><div class="controls"><input id="search" placeholder="Buscar candidato, número ou partido" autocomplete="off"><button id="refresh">Atualizar agora</button></div></div>
@@ -157,7 +177,7 @@ function buildStateInfo(meta,d){if(!d)return {...meta,loaded:false,leader:null,l
 function render(){
   const r=RACES.find(x=>x.id===S.active),d=S.data[r.id];
   $('title').textContent=r.title;
-  if(!d){$('meta').textContent=r.scope;$('message').className='notice';$('message').textContent='Aguardando dados do TSE…';$('list').innerHTML='';$('nationalDiff').className='notice hidden';$('nationalDiff').textContent='';metrics(null,[]);toggleMap(false);return}
+  if(!d){$('meta').textContent=r.scope;$('message').className='notice';$('message').textContent='Aguardando dados do TSE…';$('list').innerHTML='';$('nationalDiff').className='notice hidden';$('nationalDiff').textContent='';metrics(null,[]);toggleMap(false);$('turnoutPanel').classList.add('hidden');return}
   const all=candidates(d),q=$('search').value.trim().toLocaleLowerCase('pt-BR'),shown=q?all.filter(c=>[c.nmu,c.nm,c.n,c.party,c.partyName].some(v=>String(v??'').toLocaleLowerCase('pt-BR').includes(q))):all,p=num(d.s?.pst||0),cargo=(d.carg||[])[0]||{};
   const nd=$('nationalDiff'); if(r.id==='pres'){const lc=findLula(all),fc=findFlavio(all),dd=duelDiff(lc?.vap||0,fc?.vap||0); nd.className='notice'; nd.innerHTML=`<strong>Diferença Lula x Flávio:</strong> ${dd.leader==='Empate'?'empate em votos':`${esc(dd.leader)} está ${int(dd.diff)} votos à frente`} • Lula ${int(lc?.vap||0)} • Flávio ${int(fc?.vap||0)}`;} else {nd.className='notice hidden'; nd.textContent='';}
   $('meta').textContent=`${r.scope} • ${pct(p)} das seções • ${d.and==='f'?'finalizado':d.and==='p'?'parcial':'não iniciado'}`;
@@ -166,12 +186,13 @@ function render(){
   if(!shown.length){$('list').innerHTML='<div class="empty">Nenhum candidato encontrado.</div>'}else{$('list').innerHTML=shown.map((c,i)=>{const cp=companions(c),rank=q?all.indexOf(c)+1:i+1,pv=Math.max(0,Math.min(100,num(c.pvap)));return `<article class="cand"><div class="rank">${rank}º</div><div><div class="name">${esc(c.nmu||c.nm||'Candidato')} ${c.st?`<span class="chip">${esc(c.st)}</span>`:''}</div><div class="details"><span>Nº ${esc(c.n)}</span><span>•</span><span>${esc(c.party||'Partido não informado')}</span>${cp?`<span>•</span><span>${esc(cp)}</span>`:''}</div><div class="bar"><i style="width:${pv}%"></i></div></div><div class="votes"><strong>${int(c.vap)}</strong><div class="pct">${pct(c.pvap)}</div></div></article>`}).join('')}
   metrics(d,all,cargo);
   toggleMap(r.id==='pres');
+  renderTurnout();
   if(r.id==='pres')renderPresMap();
 }
 function toggleMap(show){$('presMapSection').classList.toggle('hidden',!show)}
 function metrics(d,all=[],cargo={}){if(!d){for(const id of ['mProgress','mVotes','mCandidates','mTime','mDate'])$(id).textContent='—';$('mSections').textContent='aguardando';$('mVacancies').textContent='—';$('progressBar').style.width='0';return}$('mProgress').textContent=pct(d.s?.pst||0);$('mSections').textContent=`${int(d.s?.st||0)} de ${int(d.s?.ts||0)} seções`;$('mVotes').textContent=int(d.v?.tv||0);$('mCandidates').textContent=int(all.length);const nv=Number(cargo.nv||0);$('mVacancies').textContent=nv?`${nv} ${nv===1?'vaga':'vagas'} no cargo`:'—';$('mTime').textContent=d.ht||d.hg||'—';$('mDate').textContent=d.dt||d.dg||'—'}
 async function load(r,force=false){const url=endpoint(r)+(force?`?v=${Date.now()}`:'');const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`${r.label}: HTTP ${res.status}`);const d=await res.json();if(force||S.idg[r.id]!==d.idg){S.data[r.id]=d;S.idg[r.id]=d.idg;if(S.active===r.id)render()}return d}
-async function loadPresState(uf,force=false){const url=presStateEndpoint(uf)+(force?`?v=${Date.now()}`:'');const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`${uf.toUpperCase()}: HTTP ${res.status}`);const d=await res.json();if(force||S.stateIdg[uf]!==d.idg){S.states[uf]=d;S.stateIdg[uf]=d.idg;if(S.active==='pres')renderPresMap()}return d}
+async function loadPresState(uf,force=false){const url=presStateEndpoint(uf)+(force?`?v=${Date.now()}`:'');const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`${uf.toUpperCase()}: HTTP ${res.status}`);const d=await res.json();if(force||S.stateIdg[uf]!==d.idg){S.states[uf]=d;S.stateIdg[uf]=d.idg;if(S.active==='pres'){renderTurnout();renderPresMap()}}return d}
 async function refresh(force=false){$('refresh').disabled=true;$('status').textContent='Atualizando…';
   const jobs=[...RACES.map(r=>load(r,force)),...PRES_UFS.map(s=>loadPresState(s.uf,force))];
   const result=await Promise.allSettled(jobs);
@@ -182,6 +203,44 @@ async function refresh(force=false){$('refresh').disabled=true;$('status').textC
   $('refresh').disabled=false;S.seconds=10;$('timer').textContent='10s';
 }
 function tabs(){$('tabs').innerHTML=RACES.map(r=>`<button data-id="${r.id}" class="${r.id===S.active?'active':''}">${r.label}</button>`).join('');$('tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;S.active=b.dataset.id;$('search').value='';[...$('tabs').children].forEach(x=>x.classList.toggle('active',x.dataset.id===S.active));render()})}
+function renderTurnout(){
+  const panel=$('turnoutPanel');
+  if(S.active!=='pres'){panel.classList.add('hidden');return;}
+  panel.classList.remove('hidden');
+  const infos=PRES_UFS.map(meta=>buildStateInfo(meta,S.states[meta.uf]));
+  const loaded=infos.filter(i=>i.loaded);
+  if(!loaded.length){for(const id of ['tElectorate','tTurnout','tAbst','tVotes','tReached','tPending','tTurnoutVoteGap','tNationalElectorate'])$(id).textContent='—';return;}
+  const sumField=field=>loaded.reduce((a,i)=>a+num(i.raw?.e?.[field]||0),0);
+  const electorate=sumField('te');
+  const reached=sumField('est');
+  const turnout=sumField('c');
+  const abst=sumField('a');
+  const votes=loaded.reduce((a,i)=>a+num(i.raw?.v?.tv||0),0);
+  const pending=Math.max(0,electorate-reached);
+  const turnoutVoteGap=Math.max(0,turnout-votes);
+  const turnoutBase=Math.max(1,turnout+abst);
+  const turnoutPct=100*turnout/turnoutBase;
+  const abstPct=100*abst/turnoutBase;
+  const reachedPct=electorate?100*reached/electorate:0;
+  const pendingPct=electorate?100*pending/electorate:0;
+  $('tElectorate').textContent=int(electorate);
+  $('tElectorateHint').textContent=`${loaded.length}/27 UFs com dados`;
+  $('tTurnout').textContent=int(turnout);
+  $('tTurnoutPct').textContent=`${pct(turnoutPct)} entre as seções instaladas já totalizadas`;
+  $('tTurnoutBar').style.width=Math.max(0,Math.min(100,turnoutPct))+'%';
+  $('tAbst').textContent=int(abst);
+  $('tAbstPct').textContent=`${pct(abstPct)} nas seções instaladas já totalizadas`;
+  $('tVotes').textContent=int(votes);
+  $('tReached').textContent=int(reached);
+  $('tReachedPct').textContent=`${pct(reachedPct)} do eleitorado apto`;
+  $('tPending').textContent=int(pending);
+  $('tPendingPct').textContent=`${pct(pendingPct)} do eleitorado apto`;
+  $('tTurnoutVoteGap').textContent=int(turnoutVoteGap);
+  const br=S.data.pres;
+  $('tNationalElectorate').textContent=br?.e?.te!=null?int(br.e.te):'—';
+  const ext=br?.e?.te!=null?Math.max(0,num(br.e.te)-electorate):null;
+  $('tNationalHint').textContent=ext==null?'arquivo nacional do TSE':`inclui exterior • diferença para 27 UFs: ${int(ext)}`;
+}
 function renderPresMap(){
   const infos=PRES_UFS.map(meta=>buildStateInfo(meta,S.states[meta.uf]));
   const loaded=infos.filter(i=>i.loaded);
