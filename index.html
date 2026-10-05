@@ -4,397 +4,262 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111f">
-<title>Eleições 2026 — Pará + Presidente</title>
-<meta name="app-version" content="2026-10-04-percentuais-fix-v2">
+<title>Eleições 2026 — Presidente | Painel Analítico</title>
+<meta name="app-version" content="2026-10-04-president-analytics-v1">
 <style>
-:root{--bg:#050a12;--p:#0c1523;--p2:#111d2e;--line:#22324a;--line2:#314867;--txt:#eef5ff;--mut:#95a4ba;--blue:#4ba3ff;--ok:#32d583;--err:#ff6b6b;--lula:#d46a6a;--lula2:#7e2c38;--fla:#4ba3ff;--fla2:#174b82;--other:#b7c0cd;--other2:#3a4658;--gold:#d7b463}
-*{box-sizing:border-box}html{background:var(--bg);color-scheme:dark}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07111f 0,#050a12 38%);color:var(--txt)}
-.wrap{max-width:1180px;margin:auto;padding:16px 14px 56px}header{position:sticky;top:0;z-index:20;background:rgba(5,10,18,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
-.header{max-width:1180px;margin:auto;padding:13px 14px;display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+:root{
+  --bg:#050a12;--p:#0c1523;--p2:#111d2e;--p3:#08111d;--line:#22324a;--line2:#314867;
+  --txt:#eef5ff;--mut:#95a4ba;--blue:#4ba3ff;--blue2:#174b82;--red:#d46a6a;--red2:#7e2c38;
+  --ok:#32d583;--warn:#f4bd50;--err:#ff6b6b;--gold:#d7b463;--other:#b7c0cd;--other2:#3a4658;
+}
+*{box-sizing:border-box}html{background:var(--bg);color-scheme:dark;scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07111f 0,#050a12 34%);color:var(--txt)}
+button,input{font:inherit}.wrap{max-width:1220px;margin:auto;padding:16px 14px 64px}
+header{position:sticky;top:0;z-index:30;background:rgba(5,10,18,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.header{max-width:1220px;margin:auto;padding:12px 14px 9px;display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}
 h1{font-size:clamp(21px,4vw,31px);margin:0;letter-spacing:-.03em}.sub{font-size:12px;color:var(--mut);margin-top:4px}.live{font-size:12px;color:var(--mut);display:flex;gap:8px;align-items:center}.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 5px rgba(50,213,131,.12)}.dot.err{background:var(--err);box-shadow:0 0 0 5px rgba(255,107,107,.12)}
-.tabs{display:flex;gap:8px;overflow:auto;padding:4px 0 12px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
-button,a.btn{border:1px solid var(--line);background:var(--p);color:var(--txt);padding:10px 12px;border-radius:12px;font-weight:700;font-size:13px;white-space:nowrap;text-decoration:none;cursor:pointer}
-button.active{background:#16375d;border-color:#316ca8}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.card{border:1px solid var(--line);background:linear-gradient(180deg,var(--p2),var(--p));border-radius:17px;padding:14px}.label{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--mut)}.value{font-size:22px;font-weight:850;margin-top:4px;font-variant-numeric:tabular-nums}.hint{font-size:11px;color:var(--mut);margin-top:3px}
-.race{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}.race h2{margin:0;font-size:20px}.meta{font-size:12px;color:var(--mut);margin-top:5px}.controls{display:flex;gap:8px;flex-wrap:wrap}input{min-width:260px;max-width:100%;background:#06101d;border:1px solid var(--line);color:var(--txt);border-radius:11px;padding:10px 12px}
-.progress{height:9px;background:#06101d;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:12px 0 8px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#79d6ff);transition:width .35s}
-.notice{padding:12px;border:1px dashed #36506d;background:#08111d;border-radius:12px;color:var(--mut);font-size:12px;line-height:1.45;margin:10px 0}.notice.err{border-color:#73343c;color:#ffd2d2;background:#251116}.hidden{display:none!important}
-.cand{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 2px;border-top:1px solid var(--line)}.cand:first-child{border-top:0}.rank{font-weight:850;text-align:center;color:var(--mut)}.name{font-size:15px;font-weight:800;line-height:1.2}.details{display:flex;gap:7px;flex-wrap:wrap;color:var(--mut);font-size:11px;margin-top:4px}.bar{height:5px;background:#07101b;border-radius:999px;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;background:var(--blue)}.votes{text-align:right;min-width:105px}.votes strong{font-size:16px;font-variant-numeric:tabular-nums}.pct{font-size:12px;color:#81c8ff;font-weight:800;margin-top:2px}.chip{font-size:10px;padding:2px 6px;border:1px solid var(--line);border-radius:999px;color:#d9e4f3}.empty{text-align:center;color:var(--mut);padding:34px 8px}
-.mapCardHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}.mapCardHeader h3{margin:0;font-size:19px}.mapSub{font-size:12px;color:var(--mut);margin-top:5px}
-.summaryPills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pill{border:1px solid var(--line);background:#0a1523;padding:8px 10px;border-radius:12px}.pill strong{display:block;font-size:15px}.pill small{display:block;color:var(--mut);font-size:11px;margin-top:3px}
-.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--mut);font-size:11px}.legend span{display:flex;align-items:center;gap:6px}.sw{width:11px;height:11px;border-radius:4px;display:inline-block;border:1px solid rgba(255,255,255,.16)}.sw.lula{background:linear-gradient(180deg,var(--lula),var(--lula2))}.sw.flavio{background:linear-gradient(180deg,var(--fla),var(--fla2))}.sw.other{background:linear-gradient(180deg,var(--other),var(--other2))}.sw.ne{background:transparent;border-color:var(--gold);box-shadow:0 0 0 1px rgba(215,180,99,.35) inset}
-.mapWrap{display:grid;grid-template-columns:minmax(360px,1.15fr) minmax(300px,.95fr);gap:14px;margin-top:14px;align-items:start}
-.tileMapBox{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:10px;overflow:auto}
-.tileMap{display:grid;grid-template-columns:repeat(10,58px);grid-template-rows:repeat(12,54px);gap:8px;min-width:652px}
-.stateTile{border:1px solid var(--line2);background:linear-gradient(180deg,#102032,#0b1624);border-radius:14px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;min-width:0;transition:.18s transform,.18s border-color,.18s box-shadow}
-.stateTile:hover{transform:translateY(-1px)}.stateTile.active{border-color:#dcecff;box-shadow:0 0 0 2px rgba(220,236,255,.13)}.stateTile.ne{box-shadow:0 0 0 1px rgba(215,180,99,.3) inset}
-.stateTile.leader-lula{background:linear-gradient(180deg,rgba(212,106,106,.24),rgba(126,44,56,.28));border-color:rgba(212,106,106,.45)}.stateTile.leader-flavio{background:linear-gradient(180deg,rgba(75,163,255,.22),rgba(23,75,130,.28));border-color:rgba(75,163,255,.45)}.stateTile.leader-outro{background:linear-gradient(180deg,rgba(183,192,205,.15),rgba(58,70,88,.28));border-color:rgba(183,192,205,.28)}
-.tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}.uf{font-size:15px;font-weight:900}.regTag{font-size:9px;color:var(--mut);border:1px solid rgba(255,255,255,.09);padding:1px 4px;border-radius:999px}.leaderShort{font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tileMeta{font-size:9px;color:#d9e4f3;opacity:.9}.tilePct{font-size:9px;color:var(--mut);margin-top:2px}
-.sidePanel{display:flex;flex-direction:column;gap:10px}.detailState{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:14px}.detailState h4{margin:0;font-size:18px}.detailMeta{font-size:12px;color:var(--mut);margin-top:5px}.miniGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.miniCard{border:1px solid var(--line);background:#0b1523;border-radius:14px;padding:10px}.miniCard .miniLabel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.miniCard .miniValue{font-size:20px;font-weight:850;margin-top:4px;font-variant-numeric:tabular-nums}.miniCard .miniHint{font-size:11px;color:var(--mut);margin-top:4px}.duel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.duelBox{border:1px solid var(--line);border-radius:14px;padding:11px;background:#0b1523}.duelBox h5{margin:0;font-size:14px}.duelBox .dv{font-size:18px;font-weight:850;margin-top:6px;font-variant-numeric:tabular-nums}.duelBox .dp{font-size:12px;margin-top:3px}.duelBox.lula{border-color:rgba(212,106,106,.35)}.duelBox.flavio{border-color:rgba(75,163,255,.35)}
-.regionCard{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:14px}.regionCard h4{margin:0;font-size:16px}.regionRows{margin-top:10px}.regionRow{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}.regionRow:first-child{border-top:0}.regionRow .ufname{font-size:13px;font-weight:700}.regionRow .ufmeta{font-size:11px;color:var(--mut);margin-top:3px}.regionRow .leadVal{text-align:right}.regionRow .leadVal strong{font-size:13px}.regionRow .leadVal div{font-size:11px;color:var(--mut);margin-top:3px}
-.allStates{margin-top:12px;border:1px solid var(--line);border-radius:16px;overflow:hidden}.allHeader,.allRow{display:grid;grid-template-columns:64px minmax(120px,1.1fr) 82px 110px 120px 120px 130px;gap:10px;align-items:center;padding:10px 12px}.allHeader{background:#0a1523;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}.allBody{background:#08111d}.allRow{border-top:1px solid var(--line);font-size:13px}.allRow:first-child{border-top:0}.allRow.nordeste{background:rgba(215,180,99,.06)}.stateName strong{display:block}.stateName small{display:block;color:var(--mut);margin-top:3px}.leaderBadge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;border:1px solid var(--line);font-size:11px;font-weight:700}.leaderBadge.lula{border-color:rgba(212,106,106,.35);color:#ffd8d8}.leaderBadge.flavio{border-color:rgba(75,163,255,.35);color:#d6ebff}.leaderBadge.other{border-color:rgba(183,192,205,.28);color:#edf4ff}.muted{color:var(--mut)}
-
-.regionSummaryPanel{margin-bottom:14px}.regionSummaryHeader{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.regionSummaryHeader h3{margin:0;font-size:19px}.regionSummaryGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.regionSummaryCard{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:13px}.regionSummaryCard.nordeste{border-color:rgba(215,180,99,.5);box-shadow:0 0 0 1px rgba(215,180,99,.10) inset}.regionSummaryCard.brasil{grid-column:span 3;background:linear-gradient(180deg,#102033,#0a1523)}.regionTitleRow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.regionTitle{font-size:15px;font-weight:850}.regionUFs{font-size:10px;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:3px 6px;white-space:nowrap}.regionVotes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.regionVoteBox{border:1px solid var(--line);border-radius:12px;padding:9px;background:#0b1523}.regionVoteBox.lula{border-color:rgba(212,106,106,.35)}.regionVoteBox.flavio{border-color:rgba(75,163,255,.35)}.regionVoteLabel{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut)}.regionVoteValue{font-size:18px;font-weight:850;margin-top:4px;font-variant-numeric:tabular-nums}.regionDiff{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;font-size:12px;color:var(--mut)}.regionDiff strong{color:var(--txt);font-size:14px}.regionBar{display:flex;height:7px;background:#06101d;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:9px}.regionBar i{display:block;height:100%}.regionBar .lulaSeg{background:linear-gradient(90deg,var(--lula2),var(--lula))}.regionBar .flavioSeg{background:linear-gradient(90deg,var(--fla),var(--fla2))}.regionNote{margin-top:10px;color:var(--mut);font-size:11px;line-height:1.45}
-.leadOverview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px;margin-bottom:12px}.leadOverviewCard{border:1px solid var(--line);background:#08111d;border-radius:15px;padding:12px}.leadOverviewCard.lula{border-color:rgba(212,106,106,.38)}.leadOverviewCard.flavio{border-color:rgba(75,163,255,.38)}.leadOverviewCard.other{border-color:rgba(183,192,205,.26)}.leadOverviewCard.regions{border-color:rgba(215,180,99,.38)}.leadOverviewLabel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.leadOverviewValue{font-size:24px;font-weight:900;margin-top:5px;font-variant-numeric:tabular-nums}.leadOverviewHint{font-size:11px;color:var(--mut);margin-top:4px;line-height:1.35}.regionalLeader{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 9px;background:#0b1523}.regionalLeader span{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em}.regionalLeader strong{font-size:13px}.regionalLeader.lula{border-color:rgba(212,106,106,.35)}.regionalLeader.flavio{border-color:rgba(75,163,255,.35)}.regionalLeader.empate{border-color:rgba(183,192,205,.28)}.stateLeadLine{margin-top:8px;font-size:11px;color:var(--mut);line-height:1.4}.stateLeadLine strong{color:var(--txt)}
-.turnoutPanel{margin-bottom:14px}.turnoutHeader{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.turnoutHeader h3{margin:0;font-size:19px}.turnoutGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.turnoutCard{border:1px solid var(--line);background:#08111d;border-radius:15px;padding:12px}.turnoutCard .tLabel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.turnoutCard .tValue{font-size:20px;font-weight:850;margin-top:5px;font-variant-numeric:tabular-nums}.turnoutCard .tHint{font-size:11px;color:var(--mut);margin-top:4px}.turnoutNote{margin-top:10px;font-size:11px;color:var(--mut);line-height:1.45}.turnoutBar{height:7px;background:#06101d;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:8px}.turnoutBar i{display:block;height:100%;background:linear-gradient(90deg,#55b6ff,#77e1bd)}
-footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.55;margin-top:18px}
-@media(max-width:960px){.mapWrap{grid-template-columns:1fr}.sidePanel{order:2}.tileMapBox{order:1}.allStates{overflow:auto}.allHeader,.allBody{min-width:860px}}
-@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.turnoutGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.leadOverview{grid-template-columns:repeat(2,minmax(0,1fr))}.regionSummaryGrid{grid-template-columns:1fr}.regionSummaryCard.brasil{grid-column:span 1}.cand{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}.votes{min-width:88px}.votes strong{font-size:14px}.name{font-size:14px}.controls{width:100%}input{width:100%;min-width:0}.controls button{width:100%}.miniGrid,.duel{grid-template-columns:1fr}.mapCardHeader{align-items:flex-start}}
+.nav{max-width:1220px;margin:auto;padding:0 14px 10px;display:flex;gap:8px;overflow:auto;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}
+button,.btn{border:1px solid var(--line);background:var(--p);color:var(--txt);padding:10px 12px;border-radius:12px;font-weight:750;font-size:13px;white-space:nowrap;cursor:pointer;text-decoration:none}.nav button.active{background:#16375d;border-color:#316ca8}.btn.subtle{background:#08111d}.btn:disabled{opacity:.5;cursor:not-allowed}
+.view{display:none}.view.active{display:block}.card{border:1px solid var(--line);background:linear-gradient(180deg,var(--p2),var(--p));border-radius:17px;padding:14px;margin-bottom:14px}.card h2,.card h3{margin:0}.sectionHead{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}.sectionHead h2{font-size:20px}.sectionHead h3{font-size:18px}.desc{font-size:12px;color:var(--mut);margin-top:5px;line-height:1.45}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.metric{border:1px solid var(--line);background:linear-gradient(180deg,var(--p2),var(--p));border-radius:17px;padding:14px;min-height:100px}.metric .label,.miniLabel{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--mut)}.metric .value,.miniValue{font-size:23px;font-weight:900;margin-top:5px;font-variant-numeric:tabular-nums;line-height:1.1}.metric .hint,.miniHint{font-size:11px;color:var(--mut);margin-top:5px;line-height:1.4}.metric.blue{border-color:rgba(75,163,255,.34)}.metric.red{border-color:rgba(212,106,106,.34)}.metric.gold{border-color:rgba(215,180,99,.34)}
+.progress{height:9px;background:#06101d;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:12px 0 8px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#79d6ff);transition:width .35s}.notice{padding:12px;border:1px dashed #36506d;background:#08111d;border-radius:12px;color:var(--mut);font-size:12px;line-height:1.5;margin:10px 0}.notice strong{color:var(--txt)}.notice.warn{border-color:#7d6430;background:#211b0e;color:#e7cf9a}.notice.err{border-color:#73343c;color:#ffd2d2;background:#251116}.hidden{display:none!important}
+.duelTop{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.duelBox{border:1px solid var(--line);border-radius:15px;padding:12px;background:#0b1523}.duelBox.red{border-color:rgba(212,106,106,.38)}.duelBox.blue{border-color:rgba(75,163,255,.38)}.duelName{font-size:14px;font-weight:850}.duelVotes{font-size:25px;font-weight:900;margin-top:8px;font-variant-numeric:tabular-nums}.duelPct{font-size:14px;font-weight:850;margin-top:4px}.splitbar{display:flex;height:10px;background:#06101d;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:12px}.splitbar i{display:block;height:100%}.splitbar .redSeg{background:linear-gradient(90deg,var(--red2),var(--red))}.splitbar .blueSeg{background:linear-gradient(90deg,var(--blue),var(--blue2))}
+.cand{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 2px;border-top:1px solid var(--line)}.cand:first-child{border-top:0}.rank{font-weight:900;text-align:center;color:var(--mut)}.name{font-size:15px;font-weight:850;line-height:1.2}.details{display:flex;gap:7px;flex-wrap:wrap;color:var(--mut);font-size:11px;margin-top:4px}.bar{height:5px;background:#07101b;border-radius:999px;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;background:var(--blue)}.votes{text-align:right;min-width:110px}.votes strong{font-size:16px;font-variant-numeric:tabular-nums}.pct{font-size:12px;color:#81c8ff;font-weight:850;margin-top:2px}.chip{font-size:10px;padding:2px 6px;border:1px solid var(--line);border-radius:999px;color:#d9e4f3}
+.chartBox{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:10px;margin-top:12px;overflow:auto}.chartBox svg{min-width:760px;width:100%;height:310px;display:block}.chartLegend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--mut)}.legendDot{width:10px;height:10px;border-radius:99px;display:inline-block;margin-right:5px;vertical-align:-1px}.legendDot.red{background:var(--red)}.legendDot.blue{background:var(--blue)}
+.tableWrap{overflow:auto;border:1px solid var(--line);border-radius:15px;margin-top:12px}.table{min-width:820px;width:100%;border-collapse:collapse;background:#08111d}.table th,.table td{padding:10px 12px;border-top:1px solid var(--line);text-align:left;font-size:12px;vertical-align:middle}.table tr:first-child th{border-top:0}.table th{color:var(--mut);font-size:10px;text-transform:uppercase;letter-spacing:.07em;background:#0a1523}.table td strong{font-size:13px}.pos{color:#b8dbff}.neg{color:#ffd0d0}.muted{color:var(--mut)}
+.mapWrap{display:grid;grid-template-columns:minmax(360px,1.15fr) minmax(300px,.95fr);gap:14px;margin-top:14px;align-items:start}.tileMapBox{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:10px;overflow:auto}.tileMap{display:grid;grid-template-columns:repeat(10,58px);grid-template-rows:repeat(12,54px);gap:8px;min-width:652px}.stateTile{border:1px solid var(--line2);background:linear-gradient(180deg,#102032,#0b1624);border-radius:14px;padding:8px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;min-width:0;transition:.18s transform,.18s border-color,.18s box-shadow}.stateTile:hover{transform:translateY(-1px)}.stateTile.active{border-color:#dcecff;box-shadow:0 0 0 2px rgba(220,236,255,.13)}.stateTile.ne{box-shadow:0 0 0 1px rgba(215,180,99,.3) inset}.stateTile.leader-lula{background:linear-gradient(180deg,rgba(212,106,106,.24),rgba(126,44,56,.28));border-color:rgba(212,106,106,.45)}.stateTile.leader-flavio{background:linear-gradient(180deg,rgba(75,163,255,.22),rgba(23,75,130,.28));border-color:rgba(75,163,255,.45)}.stateTile.leader-outro{background:linear-gradient(180deg,rgba(183,192,205,.15),rgba(58,70,88,.28));border-color:rgba(183,192,205,.28)}.tileTop{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}.uf{font-size:15px;font-weight:900}.regTag{font-size:9px;color:var(--mut);border:1px solid rgba(255,255,255,.09);padding:1px 4px;border-radius:999px}.leaderShort{font-size:11px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tileMeta{font-size:9px;color:#d9e4f3;opacity:.9}.tilePct{font-size:9px;color:var(--mut);margin-top:2px}.sidePanel{display:flex;flex-direction:column;gap:10px}.detailState,.regionCard{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:14px}.detailState h4,.regionCard h4{margin:0}.miniGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.miniCard{border:1px solid var(--line);background:#0b1523;border-radius:14px;padding:10px}.leaderBadge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;border:1px solid var(--line);font-size:11px;font-weight:750}.leaderBadge.lula{border-color:rgba(212,106,106,.35);color:#ffd8d8}.leaderBadge.flavio{border-color:rgba(75,163,255,.35);color:#d6ebff}.leaderBadge.other{border-color:rgba(183,192,205,.28);color:#edf4ff}
+.regionGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.regionCard.nordeste{border-color:rgba(215,180,99,.5)}.regionTitleRow{display:flex;justify-content:space-between;gap:8px}.regionTitle{font-weight:850}.regionUFs{font-size:10px;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:3px 6px}.regionVotes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.regionVoteBox{border:1px solid var(--line);border-radius:12px;padding:9px;background:#0b1523}.regionVoteBox.red{border-color:rgba(212,106,106,.35)}.regionVoteBox.blue{border-color:rgba(75,163,255,.35)}.regionVoteValue{font-weight:900;font-size:18px;margin-top:4px}.regionalLeader{display:flex;justify-content:space-between;gap:8px;margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:8px 9px;background:#0b1523;font-size:11px}.regionalLeader strong{font-size:13px}.swing{font-size:11px;color:var(--mut);margin-top:8px;border-top:1px solid var(--line);padding-top:8px}.swing strong{color:var(--txt)}
+.ranking{margin-top:12px}.rankRow{display:grid;grid-template-columns:46px minmax(130px,1fr) 125px 150px;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.rankRow:first-child{border-top:0}.rankRow .n{font-weight:900;color:var(--mut)}.rankRow .state strong{display:block}.rankRow .state small{color:var(--mut)}.rankRow .saldo{text-align:right;font-weight:850}.rankRow .pending{text-align:right;color:var(--mut);font-size:11px}
+.histCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}.electionCard{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:14px}.year{font-size:12px;color:var(--mut);font-weight:850}.electionTitle{font-size:18px;font-weight:900;margin-top:4px}.marginBar{height:8px;border:1px solid var(--line);background:#06101d;border-radius:999px;overflow:hidden;margin-top:10px}.marginBar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#79d6ff)}.electionMeta{font-size:11px;color:var(--mut);line-height:1.5;margin-top:10px}
+.pollCard{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:14px}.pollGap{font-size:26px;font-weight:900;margin-top:6px}.errBox{font-size:11px;color:var(--mut);margin-top:8px;line-height:1.5}.sourceLinks{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.sourceLinks a{color:#a9d4ff;font-size:11px;text-decoration:none;border-bottom:1px dotted #5b82a8}
+.simGrid{display:grid;grid-template-columns:minmax(300px,.95fr) minmax(340px,1.05fr);gap:14px;margin-top:12px}.sliderCard{border:1px solid var(--line);background:#08111d;border-radius:16px;padding:12px;margin-bottom:10px}.sliderHead{display:flex;justify-content:space-between;gap:8px;align-items:center}.sliderHead strong{font-size:13px}.sliderVotes{font-size:11px;color:var(--mut)}.sliderRow{display:grid;grid-template-columns:120px 1fr 48px;gap:8px;align-items:center;margin-top:9px}.sliderRow label{font-size:11px;color:var(--mut)}input[type=range]{width:100%;accent-color:#6fbaff}.sliderVal{text-align:right;font-size:11px;font-weight:850}.simResult{position:sticky;top:118px;border:1px solid var(--line);background:linear-gradient(180deg,#102033,#08111d);border-radius:16px;padding:14px}.simWinner{font-size:13px;color:var(--mut)}.simWinner strong{display:block;font-size:26px;color:var(--txt);margin-top:4px}.simNote{font-size:11px;color:var(--mut);line-height:1.5;margin-top:12px}
+footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-top:20px}footer a{color:#a9d4ff;text-decoration:none}
+@media(max-width:980px){.mapWrap,.simGrid{grid-template-columns:1fr}.simResult{position:static}.rankRow{grid-template-columns:40px 1fr 120px}.rankRow .pending{grid-column:2/4;text-align:left}.regionGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.grid4,.grid3,.histCards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2,.duelTop,.miniGrid,.regionGrid{grid-template-columns:1fr}.cand{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}.votes{min-width:88px}.votes strong{font-size:14px}.name{font-size:14px}.rankRow{grid-template-columns:34px 1fr}.rankRow .saldo,.rankRow .pending{grid-column:2;text-align:left}.sliderRow{grid-template-columns:100px 1fr 42px}}
+@media(max-width:480px){.grid4,.grid3,.histCards{grid-template-columns:1fr}.metric{min-height:auto}}
 </style>
 </head>
 <body>
-<header><div class="header"><div><h1>Eleições 2026 — Pará + Presidente</h1><div class="sub">Resultados oficiais do TSE • 1º turno • atualização a cada 10 segundos</div></div><div class="live"><span id="dot" class="dot"></span><span id="status">Conectando ao TSE…</span><span>•</span><span id="timer">10s</span></div></div></header>
+<header>
+  <div class="header">
+    <div><h1>Presidente 2026 — Painel Analítico</h1><div class="sub">Apuração oficial + comparação 2018/2022 + pesquisas + cenários</div></div>
+    <div class="live"><span id="dot" class="dot"></span><span id="status">Conectando ao TSE…</span><span>•</span><span id="timer">10s</span></div>
+  </div>
+  <nav id="nav" class="nav" aria-label="Seções do painel">
+    <button data-view="live" class="active">Ao vivo</button>
+    <button data-view="map">Brasil / UFs</button>
+    <button data-view="history">2018 × 2022 × 2026</button>
+    <button data-view="polls">Pesquisas × urnas</button>
+    <button data-view="scenarios">Cenários 2º turno</button>
+  </nav>
+</header>
 <main class="wrap">
-<div id="tabs" class="tabs"></div>
-<section class="grid">
-<div class="card"><div class="label">Seções totalizadas</div><div id="mProgress" class="value">—</div><div id="mSections" class="hint">aguardando</div></div>
-<div class="card"><div class="label">Votos computados</div><div id="mVotes" class="value">—</div><div class="hint">informado pelo TSE</div></div>
-<div class="card"><div class="label">Candidatos</div><div id="mCandidates" class="value">—</div><div id="mVacancies" class="hint">—</div></div>
-<div class="card"><div class="label">Atualização TSE</div><div id="mTime" class="value">—</div><div id="mDate" class="hint">—</div></div>
-</section>
-<section id="turnoutPanel" class="card turnoutPanel hidden">
-  <div class="turnoutHeader">
-    <div>
-      <h3>Eleitorado e comparecimento — Brasil</h3>
-      <div class="mapSub">Soma das 27 UFs para Presidente • atualização junto com a apuração</div>
+
+<section id="view-live" class="view active">
+  <div class="grid4">
+    <div class="metric"><div class="label">Totalização</div><div id="kProgress" class="value">—</div><div id="kSections" class="hint">Aguardando TSE</div></div>
+    <div class="metric blue"><div class="label">Líder nacional</div><div id="kLeader" class="value">—</div><div id="kLeaderPct" class="hint">—</div></div>
+    <div class="metric gold"><div class="label">Diferença em votos</div><div id="kDiffVotes" class="value">—</div><div id="kDiffVotesHint" class="hint">entre os dois primeiros</div></div>
+    <div class="metric gold"><div class="label">Diferença em p.p.</div><div id="kDiffPP" class="value">—</div><div class="hint">votos válidos</div></div>
+    <div class="metric red"><div class="label">Estados liderados — Lula</div><div id="kStatesLula" class="value">—</div><div class="hint">de 27 UFs</div></div>
+    <div class="metric blue"><div class="label">Estados liderados — Flávio</div><div id="kStatesFlavio" class="value">—</div><div class="hint">de 27 UFs</div></div>
+    <div class="metric"><div class="label">Regiões lideradas</div><div id="kRegions" class="value">—</div><div class="hint">N, NE, CO, SE e Sul</div></div>
+    <div class="metric"><div class="label">Atualização TSE</div><div id="kTime" class="value">—</div><div id="kDate" class="hint">—</div></div>
+  </div>
+
+  <section class="card">
+    <div class="sectionHead">
+      <div><h2>Placar nacional</h2><div id="liveMeta" class="desc">Brasil + exterior • aguardando dados oficiais</div></div>
+      <button id="refresh" class="btn">Atualizar agora</button>
     </div>
-  </div>
-  <div class="turnoutGrid">
-    <div class="turnoutCard"><div class="tLabel">Eleitores aptos</div><div id="tElectorate" class="tValue">—</div><div id="tElectorateHint" class="tHint">Brasil, 27 UFs</div></div>
-    <div class="turnoutCard"><div class="tLabel">Comparecimento apurado</div><div id="tTurnout" class="tValue">—</div><div id="tTurnoutPct" class="tHint">—</div><div class="turnoutBar"><i id="tTurnoutBar" style="width:0"></i></div></div>
-    <div class="turnoutCard"><div class="tLabel">Abstenções apuradas</div><div id="tAbst" class="tValue">—</div><div id="tAbstPct" class="tHint">—</div></div>
-    <div class="turnoutCard"><div class="tLabel">Votos computados</div><div id="tVotes" class="tValue">—</div><div class="tHint">para Presidente nas UFs já totalizadas</div></div>
-    <div class="turnoutCard"><div class="tLabel">Eleitorado já totalizado</div><div id="tReached" class="tValue">—</div><div id="tReachedPct" class="tHint">—</div></div>
-    <div class="turnoutCard"><div class="tLabel">Ainda em seções não totalizadas</div><div id="tPending" class="tValue">—</div><div id="tPendingPct" class="tHint">—</div></div>
-    <div class="turnoutCard"><div class="tLabel">Comparecimento − votos computados</div><div id="tTurnoutVoteGap" class="tValue">—</div><div class="tHint">diferença entre quem compareceu e os votos do cargo já computados</div></div>
-    <div class="turnoutCard"><div class="tLabel">Brasil + exterior</div><div id="tNationalElectorate" class="tValue">—</div><div id="tNationalHint" class="tHint">arquivo nacional do TSE</div></div>
-  </div>
-  <div class="turnoutNote"><strong>Importante:</strong> durante a apuração, comparecimento e abstenção só são conhecidos nas seções já totalizadas. Portanto, “eleitores aptos − comparecimento” ainda não representa a abstenção nacional final enquanto a totalização não chegar a 100%.</div>
+    <div class="progress"><i id="progressBar"></i></div>
+    <div id="liveMessage" class="notice">Carregando dados oficiais do TSE…</div>
+    <div id="duelTop" class="duelTop hidden">
+      <div class="duelBox red"><div id="lulaName" class="duelName">Lula</div><div id="lulaVotes" class="duelVotes">—</div><div id="lulaPct" class="duelPct">—</div></div>
+      <div class="duelBox blue"><div id="flavioName" class="duelName">Flávio Bolsonaro</div><div id="flavioVotes" class="duelVotes">—</div><div id="flavioPct" class="duelPct">—</div></div>
+    </div>
+    <div id="duelBar" class="splitbar hidden"><i id="lulaSeg" class="redSeg"></i><i id="flavioSeg" class="blueSeg"></i></div>
+    <div id="candidateList"></div>
+  </section>
+
+  <section class="card">
+    <div class="sectionHead"><div><h3>Evolução da apuração</h3><div class="desc">Marcos públicos da noite eleitoral + snapshots registrados por este painel no navegador.</div></div></div>
+    <div class="chartBox"><svg id="liveChart" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-label="Gráfico da evolução da apuração"></svg></div>
+    <div class="chartLegend"><span><i class="legendDot red"></i>Lula</span><span><i class="legendDot blue"></i>Flávio Bolsonaro</span><span>eixo horizontal: % de seções totalizadas</span></div>
+    <div class="notice"><strong>Fonte dos marcos iniciais:</strong> Folha de S.Paulo, 4/10/2026. A partir da abertura deste painel, novos pontos são guardados localmente sempre que a totalização muda de forma relevante.</div>
+  </section>
+
+  <section class="card">
+    <div class="sectionHead"><div><h3>Caminho matemático da apuração</h3><div class="desc">Estimativa, não projeção: usa o eleitorado ainda não totalizado nas 27 UFs e as taxas observadas de comparecimento e votos válidos.</div></div></div>
+    <div class="grid3" style="margin-top:12px">
+      <div class="miniCard"><div class="miniLabel">Eleitorado em seções ainda não totalizadas</div><div id="mathPending" class="miniValue">—</div><div id="mathPendingPct" class="miniHint">—</div></div>
+      <div class="miniCard"><div class="miniLabel">Votos válidos estimados ainda a entrar</div><div id="mathEstValid" class="miniValue">—</div><div id="mathRates" class="miniHint">—</div></div>
+      <div class="miniCard"><div class="miniLabel">Vantagem líquida necessária ao 2º</div><div id="mathNetNeed" class="miniValue">—</div><div id="mathNetHint" class="miniHint">—</div></div>
+    </div>
+    <div id="mathNotice" class="notice warn">Aguardando dados suficientes para calcular.</div>
+  </section>
 </section>
 
-<section id="regionSummaryPanel" class="card regionSummaryPanel hidden">
-  <div class="regionSummaryHeader">
-    <div>
-      <h3>Presidente por região — Lula x Flávio Bolsonaro</h3>
-      <div class="mapSub">Soma dos votos oficiais de cada UF • Norte, Nordeste, Centro-Oeste, Sudeste e Sul</div>
+<section id="view-map" class="view">
+  <section class="card">
+    <div class="sectionHead"><div><h2>Brasil por UF</h2><div class="desc">Clique em um estado. As cores indicam quem lidera naquela UF na totalização atual.</div></div></div>
+    <div class="mapWrap">
+      <div class="tileMapBox"><div id="tileMap" class="tileMap"></div></div>
+      <div class="sidePanel"><div id="stateDetail" class="detailState">Aguardando estados…</div></div>
     </div>
-  </div>
-  <div id="leadOverview" class="leadOverview">
-    <div class="leadOverviewCard lula"><div class="leadOverviewLabel">Estados liderados por Lula</div><div id="statesLula" class="leadOverviewValue">—</div><div id="statesLulaHint" class="leadOverviewHint">de 27 UFs</div></div>
-    <div class="leadOverviewCard flavio"><div class="leadOverviewLabel">Estados liderados por Flávio</div><div id="statesFlavio" class="leadOverviewValue">—</div><div id="statesFlavioHint" class="leadOverviewHint">de 27 UFs</div></div>
-    <div class="leadOverviewCard other"><div class="leadOverviewLabel">Outros / empate</div><div id="statesOther" class="leadOverviewValue">—</div><div id="statesOtherHint" class="leadOverviewHint">estados não liderados pelos dois</div></div>
-    <div class="leadOverviewCard regions"><div class="leadOverviewLabel">Regiões lideradas</div><div id="regionsLead" class="leadOverviewValue">—</div><div id="regionsLeadHint" class="leadOverviewHint">pela soma de votos Lula x Flávio</div></div>
-  </div>
-  <div id="regionSummaryGrid" class="regionSummaryGrid"></div>
-  <div class="regionNote">Os números são a soma dos estados de cada região no estágio atual da totalização. O total “Brasil — 27 UFs” não inclui os votos do exterior.</div>
+  </section>
+
+  <section class="card">
+    <div class="sectionHead"><div><h3>Regiões e swing 2022 → 2026</h3><div class="desc">Swing = mudança na diferença Lula menos candidato Bolsonaro, em pontos percentuais. Os dados de 2022 são carregados do JSON público do TSE uma única vez.</div></div><div id="hist2022Status" class="desc">Carregando 2022…</div></div>
+    <div id="regionGrid" class="regionGrid"></div>
+  </section>
+
+  <section class="card">
+    <div class="sectionHead"><div><h3>Estados que mais constroem a diferença</h3><div class="desc">Ranking pelo saldo absoluto de votos entre Lula e Flávio. Também mostra o eleitorado ainda não totalizado em cada UF.</div></div></div>
+    <div id="stateRanking" class="ranking"></div>
+  </section>
+
+  <section class="card">
+    <div class="sectionHead"><div><h3>Estados com maior eleitorado ainda não totalizado</h3><div class="desc">Não é previsão de votos: é somente o eleitorado cadastrado nas seções que ainda não entraram na totalização.</div></div></div>
+    <div id="pendingRanking" class="ranking"></div>
+  </section>
 </section>
-<section class="card">
-<div class="race"><div><h2 id="title">—</h2><div id="meta" class="meta">—</div></div><div class="controls"><input id="search" placeholder="Buscar candidato, número ou partido" autocomplete="off"><button id="refresh">Atualizar agora</button></div></div>
-<div class="progress"><i id="progressBar"></i></div>
-<div id="nationalDiff" class="notice hidden"></div>
-<div id="message" class="notice">Carregando dados oficiais…</div>
-<div id="list"></div>
+
+<section id="view-history" class="view">
+  <section class="card">
+    <div class="sectionHead"><div><h2>Primeiro turno — 2018 × 2022 × 2026</h2><div class="desc">Mesma leitura: primeiro colocado, segundo colocado e a margem entre eles em votos válidos.</div></div></div>
+    <div id="historyCards" class="histCards"></div>
+    <div class="tableWrap"><table class="table"><thead><tr><th>Eleição</th><th>1º colocado</th><th>Votos</th><th>%</th><th>2º colocado</th><th>Votos</th><th>%</th><th>Diferença</th></tr></thead><tbody id="historyTable"></tbody></table></div>
+  </section>
+
+  <section class="card">
+    <div class="sectionHead"><div><h3>Do 1º para o 2º turno</h3><div class="desc">Quanto os dois finalistas aumentaram sua votação e como a margem mudou.</div></div></div>
+    <div class="tableWrap"><table class="table"><thead><tr><th>Ano</th><th>Finalista</th><th>1º turno</th><th>2º turno</th><th>Ganho de votos</th><th>Resultado final</th></tr></thead><tbody id="turnTable"></tbody></table></div>
+  </section>
 </section>
-<section id="presMapSection" class="card hidden">
-  <div class="mapCardHeader">
-    <div>
-      <h3>Mapa presidencial por estado</h3>
-      <div class="mapSub">Brasil por UF • foco no Nordeste • clique em um estado para ver Lula x Flávio Bolsonaro</div>
-      <div class="summaryPills">
-        <div class="pill"><strong id="sumBrasil">—</strong><small>Estados com dados recebidos</small></div>
-        <div class="pill"><strong id="sumNordeste">—</strong><small>Nordeste: quem lidera</small></div>
-        <div class="pill"><strong id="sumNEVotes">—</strong><small>Votos somados no Nordeste (Lula x Flávio)</small></div>
-        <div class="pill"><strong id="sumNEDiff">—</strong><small>Diferença agregada no Nordeste</small></div>
-      </div>
-      <div class="legend">
-        <span><i class="sw lula"></i> Lula lidera</span>
-        <span><i class="sw flavio"></i> Flávio lidera</span>
-        <span><i class="sw other"></i> Outro candidato lidera</span>
-        <span><i class="sw ne"></i> Estado do Nordeste</span>
-      </div>
+
+<section id="view-polls" class="view">
+  <section class="card">
+    <div class="sectionHead"><div><h2>Pesquisas × urnas</h2><div class="desc">Comparação padronizada com a última pesquisa Datafolha em votos válidos antes do 1º turno de cada eleição.</div></div></div>
+    <div id="pollCards" class="histCards"></div>
+    <div class="tableWrap"><table class="table"><thead><tr><th>Ano</th><th>Pesquisa</th><th>Urna</th><th>Erro 1º</th><th>Erro 2º</th><th>Gap previsto</th><th>Gap na urna</th></tr></thead><tbody id="pollTable"></tbody></table></div>
+    <div class="notice"><strong>Leitura correta:</strong> erro aqui é a diferença absoluta em pontos percentuais entre a pesquisa final e a urna. Isso não prova viés nem causalidade; apenas mede a distância daquele levantamento específico para o resultado.</div>
+    <div class="sourceLinks">
+      <a href="https://datafolha.folha.uol.com.br/eleicoes/2018/10/1983037-bolsonaro-tem-40-dos-validos-na-vespera-do-1-turno.shtml" target="_blank" rel="noopener">Datafolha 2018</a>
+      <a href="https://datafolha.folha.uol.com.br/eleicoes/2022/10/na-vespera-da-eleicao-lula-tem-50-e-bolsonaro-36.shtml" target="_blank" rel="noopener">Datafolha 2022</a>
+      <a href="https://datafolha.folha.uol.com.br/eleicoes/2026/10/na-vespera-da-eleicao-lula-tem-45-dos-validos-no-1o-turno-empatado-com-flavio-bolsonaro-42.shtml" target="_blank" rel="noopener">Datafolha 2026</a>
     </div>
-  </div>
-  <div class="mapWrap">
-    <div class="tileMapBox">
-      <div id="tileMap" class="tileMap"></div>
-    </div>
-    <div class="sidePanel">
-      <div id="stateDetail" class="detailState">Selecione um estado no mapa.</div>
-      <div class="regionCard">
-        <h4>Nordeste — resumo por estado</h4>
-        <div id="neRows" class="regionRows"></div>
-      </div>
-    </div>
-  </div>
-  <div class="allStates">
-    <div class="allHeader">
-      <div>UF</div><div>Estado</div><div>Totaliz.</div><div>Líder</div><div>Lula</div><div>Flávio</div><div>Diferença</div>
-    </div>
-    <div id="allRows" class="allBody"></div>
-  </div>
+  </section>
 </section>
-<footer>Fonte: arquivos públicos de Divulgação de Resultados do Tribunal Superior Eleitoral (TSE), formato EA20. Este painel apenas reproduz os dados oficiais recebidos e não faz projeção eleitoral. Em caso de divergência, prevalece o portal oficial do TSE.</footer>
+
+<section id="view-scenarios" class="view">
+  <section class="card">
+    <div class="sectionHead"><div><h2>Simulador de 2º turno</h2><div class="desc">Ferramenta de hipótese. O painel não presume para onde irão os votos dos demais candidatos; você define as transferências.</div></div><button id="resetSim" class="btn subtle">Voltar ao neutro</button></div>
+    <div class="notice warn"><strong>SIMULAÇÃO — não é projeção.</strong> O ponto neutro divide igualmente entre Lula e Flávio os votos dos demais candidatos que você considerar presentes no 2º turno. Não inclui novos votos vindos da abstenção do 1º turno.</div>
+    <div class="simGrid">
+      <div id="simControls"></div>
+      <div><div id="simResult" class="simResult"></div></div>
+    </div>
+  </section>
+</section>
+
+<footer>
+  Dados de 2026: arquivos públicos de Divulgação de Resultados do TSE. Histórico 2018/2022: TSE. Pesquisas: Datafolha. O painel separa dado oficial, estimativa e simulação. Em caso de divergência, prevalece o portal oficial do TSE.
+  <div class="sourceLinks" style="justify-content:center"><a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener">Resultados TSE</a><a href="https://www.tse.jus.br/" target="_blank" rel="noopener">TSE</a></div>
+</footer>
 </main>
 <script>
 (()=>{
 'use strict';
-const BASE='https://resultados.tse.jus.br/oficial/ele2026';
-const RACES=[
-{id:'pres',label:'Presidente',title:'Presidente da República — Brasil',scope:'Brasil + exterior',e:'6257',uf:'br',c:'0001'},
-{id:'gov',label:'Governador',title:'Governador — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0003'},
-{id:'sen',label:'Senador',title:'Senador — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0005'},
-{id:'df',label:'Dep. Federal',title:'Deputado Federal — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0006'},
-{id:'de',label:'Dep. Estadual',title:'Deputado Estadual — Pará',scope:'Estado do Pará',e:'6259',uf:'pa',c:'0007'}
+const BASE26='https://resultados.tse.jus.br/oficial/ele2026';
+const PRES26={e:'6257',uf:'br',c:'0001'};
+const BASE22='https://resultados.tse.jus.br/oficial/ele2022/544/dados-simplificados';
+const UFS=[
+{uf:'rr',sigla:'RR',nome:'Roraima',reg:'Norte',x:4,y:1},{uf:'ap',sigla:'AP',nome:'Amapá',reg:'Norte',x:8,y:1},{uf:'am',sigla:'AM',nome:'Amazonas',reg:'Norte',x:3,y:3},{uf:'pa',sigla:'PA',nome:'Pará',reg:'Norte',x:7,y:3},{uf:'ac',sigla:'AC',nome:'Acre',reg:'Norte',x:1,y:5},{uf:'ro',sigla:'RO',nome:'Rondônia',reg:'Norte',x:2,y:5},{uf:'to',sigla:'TO',nome:'Tocantins',reg:'Norte',x:7,y:5},
+{uf:'ma',sigla:'MA',nome:'Maranhão',reg:'Nordeste',x:8,y:4},{uf:'pi',sigla:'PI',nome:'Piauí',reg:'Nordeste',x:9,y:4},{uf:'ce',sigla:'CE',nome:'Ceará',reg:'Nordeste',x:10,y:4},{uf:'rn',sigla:'RN',nome:'Rio Grande do Norte',reg:'Nordeste',x:10,y:3},{uf:'pb',sigla:'PB',nome:'Paraíba',reg:'Nordeste',x:10,y:5},{uf:'pe',sigla:'PE',nome:'Pernambuco',reg:'Nordeste',x:9,y:5},{uf:'al',sigla:'AL',nome:'Alagoas',reg:'Nordeste',x:9,y:6},{uf:'se',sigla:'SE',nome:'Sergipe',reg:'Nordeste',x:10,y:6},{uf:'ba',sigla:'BA',nome:'Bahia',reg:'Nordeste',x:8,y:6},
+{uf:'mt',sigla:'MT',nome:'Mato Grosso',reg:'Centro-Oeste',x:4,y:6},{uf:'ms',sigla:'MS',nome:'Mato Grosso do Sul',reg:'Centro-Oeste',x:4,y:8},{uf:'go',sigla:'GO',nome:'Goiás',reg:'Centro-Oeste',x:6,y:7},{uf:'df',sigla:'DF',nome:'Distrito Federal',reg:'Centro-Oeste',x:7,y:7},
+{uf:'mg',sigla:'MG',nome:'Minas Gerais',reg:'Sudeste',x:7,y:8},{uf:'es',sigla:'ES',nome:'Espírito Santo',reg:'Sudeste',x:9,y:8},{uf:'rj',sigla:'RJ',nome:'Rio de Janeiro',reg:'Sudeste',x:9,y:9},{uf:'sp',sigla:'SP',nome:'São Paulo',reg:'Sudeste',x:6,y:9},{uf:'pr',sigla:'PR',nome:'Paraná',reg:'Sul',x:6,y:10},{uf:'sc',sigla:'SC',nome:'Santa Catarina',reg:'Sul',x:6,y:11},{uf:'rs',sigla:'RS',nome:'Rio Grande do Sul',reg:'Sul',x:5,y:12}
 ];
-const PRES_UFS=[
-{uf:'rr',sigla:'RR',nome:'Roraima',reg:'Norte',x:4,y:1},
-{uf:'ap',sigla:'AP',nome:'Amapá',reg:'Norte',x:8,y:1},
-{uf:'am',sigla:'AM',nome:'Amazonas',reg:'Norte',x:3,y:3},
-{uf:'pa',sigla:'PA',nome:'Pará',reg:'Norte',x:7,y:3},
-{uf:'ac',sigla:'AC',nome:'Acre',reg:'Norte',x:1,y:5},
-{uf:'ro',sigla:'RO',nome:'Rondônia',reg:'Norte',x:2,y:5},
-{uf:'to',sigla:'TO',nome:'Tocantins',reg:'Norte',x:7,y:5},
-{uf:'ma',sigla:'MA',nome:'Maranhão',reg:'Nordeste',x:8,y:4},
-{uf:'pi',sigla:'PI',nome:'Piauí',reg:'Nordeste',x:9,y:4},
-{uf:'ce',sigla:'CE',nome:'Ceará',reg:'Nordeste',x:10,y:4},
-{uf:'rn',sigla:'RN',nome:'Rio Grande do Norte',reg:'Nordeste',x:10,y:3},
-{uf:'pb',sigla:'PB',nome:'Paraíba',reg:'Nordeste',x:10,y:5},
-{uf:'pe',sigla:'PE',nome:'Pernambuco',reg:'Nordeste',x:9,y:5},
-{uf:'al',sigla:'AL',nome:'Alagoas',reg:'Nordeste',x:9,y:6},
-{uf:'se',sigla:'SE',nome:'Sergipe',reg:'Nordeste',x:10,y:6},
-{uf:'ba',sigla:'BA',nome:'Bahia',reg:'Nordeste',x:8,y:6},
-{uf:'mt',sigla:'MT',nome:'Mato Grosso',reg:'Centro-Oeste',x:4,y:6},
-{uf:'ms',sigla:'MS',nome:'Mato Grosso do Sul',reg:'Centro-Oeste',x:4,y:8},
-{uf:'go',sigla:'GO',nome:'Goiás',reg:'Centro-Oeste',x:6,y:7},
-{uf:'df',sigla:'DF',nome:'Distrito Federal',reg:'Centro-Oeste',x:7,y:7},
-{uf:'mg',sigla:'MG',nome:'Minas Gerais',reg:'Sudeste',x:7,y:8},
-{uf:'es',sigla:'ES',nome:'Espírito Santo',reg:'Sudeste',x:9,y:8},
-{uf:'rj',sigla:'RJ',nome:'Rio de Janeiro',reg:'Sudeste',x:9,y:9},
-{uf:'sp',sigla:'SP',nome:'São Paulo',reg:'Sudeste',x:6,y:9},
-{uf:'pr',sigla:'PR',nome:'Paraná',reg:'Sul',x:6,y:10},
-{uf:'sc',sigla:'SC',nome:'Santa Catarina',reg:'Sul',x:6,y:11},
-{uf:'rs',sigla:'RS',nome:'Rio Grande do Sul',reg:'Sul',x:5,y:12}
+const HIST={
+  2018:{first:[{name:'Jair Bolsonaro',votes:49276990,pct:46.03},{name:'Fernando Haddad',votes:31342005,pct:29.28}],second:[{name:'Jair Bolsonaro',votes:57797847,pct:55.13},{name:'Fernando Haddad',votes:47040906,pct:44.87}],poll:[{name:'Jair Bolsonaro',pct:40},{name:'Fernando Haddad',pct:25}]},
+  2022:{first:[{name:'Lula',votes:57259504,pct:48.43},{name:'Jair Bolsonaro',votes:51072345,pct:43.20}],second:[{name:'Lula',votes:60345999,pct:50.90},{name:'Jair Bolsonaro',votes:58206354,pct:49.10}],poll:[{name:'Lula',pct:50},{name:'Jair Bolsonaro',pct:36}]},
+  2026:{poll:[{name:'Lula',pct:45},{name:'Flávio Bolsonaro',pct:42}]}
+};
+const HISTORY_SEEDS=[
+  {p:1.51,lula:42.18,flavio:49.17,label:'17:26'},
+  {p:12.54,lula:40.71,flavio:51.09,label:'18:00'},
+  {p:64.81,lula:42.25,flavio:49.58,label:'64,81%'}
 ];
-const S={active:'pres',data:{},idg:{},seconds:10,states:{},stateIdg:{},selectedUf:'ba'};
+const S={data:null,idg:null,seconds:10,states:{},stateIdg:{},states22:{},selectedUf:'pa',view:'live',history:[],sim:{}};
 const $=id=>document.getElementById(id);
 const num=v=>Number(String(v??'0').replace(/\./g,'').replace(',','.'))||0;
-// O TSE costuma enviar percentuais em centésimos (ex.: "9902" = 99,02%)
-// e, em alguns pontos, pode haver decimal já convertido. Esta função trata os dois formatos.
-const pnum=v=>{
-  if(v==null||v==='')return 0;
-  if(typeof v==='number'){
-    if(!Number.isFinite(v))return 0;
-    return Math.abs(v)>100?v/100:v;
-  }
-  let x=String(v).trim().replace('%','');
-  if(!x)return 0;
-  if(x.includes(',')){
-    const n=Number(x.replace(/\./g,'').replace(',','.'));
-    return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0;
-  }
-  if(x.includes('.')){
-    const n=Number(x);
-    if(Number.isFinite(n))return Math.abs(n)>100?n/100:n;
-  }
-  const n=Number(x.replace(/[^0-9-]/g,''));
-  return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0;
-};
-const int=v=>new Intl.NumberFormat('pt-BR').format(Number(v||0));
-const pct=v=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(pnum(v))+'%';
+const pnum=v=>{if(v==null||v==='')return 0;if(typeof v==='number')return Math.abs(v)>100?v/100:v;let x=String(v).trim().replace('%','');if(!x)return 0;if(x.includes(',')){const n=Number(x.replace(/\./g,'').replace(',','.'));return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0}const n=Number(x);return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0};
+const int=v=>new Intl.NumberFormat('pt-BR').format(Math.round(Number(v||0)));
+const dec=(v,d=2)=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(Number(v||0));
+const pct=v=>dec(pnum(v),2)+'%';
+const pp=v=>(Number(v)>=0?'+':'')+dec(v,2)+' p.p.';
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
-const endpoint=r=>`${BASE}/${r.e}/dados/${r.uf}/${r.uf}-c${r.c}-e${String(r.e).padStart(6,'0')}-u.json`;
-const presStateEndpoint=uf=>`${BASE}/6257/dados/${uf}/${uf}-c0001-e006257-u.json`;
-function candidates(d){const out=[];const cargo=(d?.carg||[])[0];for(const agr of (cargo?.agr||[])){for(const par of (agr?.par||[])){for(const c of (par?.cand||[])){out.push({...c,party:par.sg||'',partyName:par.nm||'',group:agr.nm||''});}}}return out.sort((a,b)=>num(b.vap)-num(a.vap)||num(a.seq)-num(b.seq)||String(a.nmu||a.nm).localeCompare(String(b.nmu||b.nm),'pt-BR'));}
-function companions(c){return (c.vs||[]).map(x=>`${x.tp==='v'?'Vice':x.tp==='s1'?'1º suplente':x.tp==='s2'?'2º suplente':'Composição'}: ${x.nmu||x.nm||''}`).join(' • ')}
-function findLula(all){return all.find(c=>c.n==='13'||norm(c.nmu||c.nm).includes('LULA'));}
-function findFlavio(all){return all.find(c=>c.n==='22'||norm(c.nmu||c.nm).includes('FLAVIO BOLSONARO')||norm(c.nmu||c.nm)==='BOLSONARO');}
-function leaderKey(c){if(!c)return 'outro'; if(findLula([c]))return 'lula'; if(findFlavio([c]))return 'flavio'; return 'outro';}
-function duelDiff(lulaVotes,flavioVotes){const l=num(lulaVotes),f=num(flavioVotes),d=Math.abs(l-f);return {diff:d,leader:l===f?'Empate':l>f?'Lula':'Flávio Bolsonaro',short:l===f?'Empate':l>f?'Lula':'Flávio'};}
-function shortLeaderName(c){if(!c)return 'Sem dados'; if(findLula([c]))return 'Lula'; if(findFlavio([c]))return 'Flávio'; return c.nmu||c.nm||'Outro';}
-function buildStateInfo(meta,d){if(!d)return {...meta,loaded:false,leader:null,leaderType:'outro',totalPct:0,totalVotes:0,lulaVotes:0,lulaPct:0,flavioVotes:0,flavioPct:0,all:[]};
-  const all=candidates(d); const leader=all[0]||null; const lula=findLula(all); const flavio=findFlavio(all);
-  return {...meta,loaded:true,raw:d,all,leader,leaderType:leaderKey(leader),leaderShort:shortLeaderName(leader),totalPct:pnum(d.s?.pst||0),totalVotes:num(d.v?.tv||0),sectionsDone:num(d.s?.st||0),sectionsTotal:num(d.s?.ts||0),updatedTime:d.ht||d.hg||'—',updatedDate:d.dt||d.dg||'—',status:d.and||'',lula:lula||null,lulaVotes:num(lula?.vap||0),lulaPct:pnum(lula?.pvap||0),flavio:flavio||null,flavioVotes:num(flavio?.vap||0),flavioPct:pnum(flavio?.pvap||0)};
-}
-function render(){
-  const r=RACES.find(x=>x.id===S.active),d=S.data[r.id];
-  $('title').textContent=r.title;
-  if(!d){$('meta').textContent=r.scope;$('message').className='notice';$('message').textContent='Aguardando dados do TSE…';$('list').innerHTML='';$('nationalDiff').className='notice hidden';$('nationalDiff').textContent='';metrics(null,[]);toggleMap(false);$('turnoutPanel').classList.add('hidden');$('regionSummaryPanel').classList.add('hidden');return}
-  const all=candidates(d),q=$('search').value.trim().toLocaleLowerCase('pt-BR'),shown=q?all.filter(c=>[c.nmu,c.nm,c.n,c.party,c.partyName].some(v=>String(v??'').toLocaleLowerCase('pt-BR').includes(q))):all,p=pnum(d.s?.pst||0),cargo=(d.carg||[])[0]||{};
-  const nd=$('nationalDiff'); if(r.id==='pres'){const lc=findLula(all),fc=findFlavio(all),dd=duelDiff(lc?.vap||0,fc?.vap||0); nd.className='notice'; nd.innerHTML=`<strong>Diferença Lula x Flávio:</strong> ${dd.leader==='Empate'?'empate em votos':`${esc(dd.leader)} está ${int(dd.diff)} votos à frente`} • Lula ${int(lc?.vap||0)} • Flávio ${int(fc?.vap||0)}`;} else {nd.className='notice hidden'; nd.textContent='';}
-  $('meta').textContent=`${r.scope} • ${pct(p)} das seções • ${d.and==='f'?'finalizado':d.and==='p'?'parcial':'não iniciado'}`;
-  $('progressBar').style.width=Math.max(0,Math.min(100,p))+'%';
-  $('message').classList.add('hidden');
-  if(!shown.length){$('list').innerHTML='<div class="empty">Nenhum candidato encontrado.</div>'}else{$('list').innerHTML=shown.map((c,i)=>{const cp=companions(c),rank=q?all.indexOf(c)+1:i+1,pv=Math.max(0,Math.min(100,pnum(c.pvap)));return `<article class="cand"><div class="rank">${rank}º</div><div><div class="name">${esc(c.nmu||c.nm||'Candidato')} ${c.st?`<span class="chip">${esc(c.st)}</span>`:''}</div><div class="details"><span>Nº ${esc(c.n)}</span><span>•</span><span>${esc(c.party||'Partido não informado')}</span>${cp?`<span>•</span><span>${esc(cp)}</span>`:''}</div><div class="bar"><i style="width:${pv}%"></i></div></div><div class="votes"><strong>${int(c.vap)}</strong><div class="pct">${pct(c.pvap)}</div></div></article>`}).join('')}
-  metrics(d,all,cargo);
-  toggleMap(r.id==='pres');
-  renderTurnout();
-  renderRegions();
-  if(r.id==='pres')renderPresMap();
-}
-function toggleMap(show){$('presMapSection').classList.toggle('hidden',!show)}
-function metrics(d,all=[],cargo={}){if(!d){for(const id of ['mProgress','mVotes','mCandidates','mTime','mDate'])$(id).textContent='—';$('mSections').textContent='aguardando';$('mVacancies').textContent='—';$('progressBar').style.width='0';return}$('mProgress').textContent=pct(d.s?.pst||0);$('mSections').textContent=`${int(d.s?.st||0)} de ${int(d.s?.ts||0)} seções`;$('mVotes').textContent=int(d.v?.tv||0);$('mCandidates').textContent=int(all.length);const nv=Number(cargo.nv||0);$('mVacancies').textContent=nv?`${nv} ${nv===1?'vaga':'vagas'} no cargo`:'—';$('mTime').textContent=d.ht||d.hg||'—';$('mDate').textContent=d.dt||d.dg||'—'}
-async function load(r,force=false){const url=endpoint(r)+(force?`?v=${Date.now()}`:'');const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`${r.label}: HTTP ${res.status}`);const d=await res.json();if(force||S.idg[r.id]!==d.idg){S.data[r.id]=d;S.idg[r.id]=d.idg;if(S.active===r.id)render()}return d}
-async function loadPresState(uf,force=false){const url=presStateEndpoint(uf)+(force?`?v=${Date.now()}`:'');const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`${uf.toUpperCase()}: HTTP ${res.status}`);const d=await res.json();if(force||S.stateIdg[uf]!==d.idg){S.states[uf]=d;S.stateIdg[uf]=d.idg;if(S.active==='pres'){renderTurnout();renderRegions();renderPresMap()}}return d}
-async function refresh(force=false){$('refresh').disabled=true;$('status').textContent='Atualizando…';
-  const jobs=[...RACES.map(r=>load(r,force)),...PRES_UFS.map(s=>loadPresState(s.uf,force))];
-  const result=await Promise.allSettled(jobs);
-  const ok=result.filter(x=>x.status==='fulfilled').length;
-  const total=jobs.length;
-  if(ok){$('dot').className='dot';$('status').textContent=`TSE conectado • ${ok}/${total}`; if(S.data[S.active])render();}
-  else {$('dot').className='dot err';$('status').textContent='Falha ao acessar o TSE'; const reasons=result.map(x=>x.status==='rejected'?x.reason?.message:'').filter(Boolean).join(' | '); $('message').className='notice err'; $('message').innerHTML=`Não foi possível receber os arquivos oficiais agora. <br><small>${esc(reasons||'Falha de rede ou política do navegador.')}</small>`;}
-  $('refresh').disabled=false;S.seconds=10;$('timer').textContent='10s';
-}
-function tabs(){$('tabs').innerHTML=RACES.map(r=>`<button data-id="${r.id}" class="${r.id===S.active?'active':''}">${r.label}</button>`).join('');$('tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(!b)return;S.active=b.dataset.id;$('search').value='';[...$('tabs').children].forEach(x=>x.classList.toggle('active',x.dataset.id===S.active));render()})}
-
-function renderRegions(){
-  const panel=$('regionSummaryPanel');
-  if(S.active!=='pres'){panel.classList.add('hidden');return;}
-  panel.classList.remove('hidden');
-  const infos=PRES_UFS.map(meta=>buildStateInfo(meta,S.states[meta.uf]));
-  const regionOrder=['Norte','Nordeste','Centro-Oeste','Sudeste','Sul'];
-
-  // Liderança estadual = candidato que está em 1º na UF naquele momento.
-  const stateLeadType=i=>{
-    if(!i.loaded||!i.all.length)return 'sem';
-    const top=i.all[0], second=i.all[1];
-    if(second && num(top.vap)===num(second.vap))return 'empate';
-    return leaderKey(top);
-  };
-  const stateCounts=infos.reduce((acc,i)=>{const k=stateLeadType(i);acc[k]=(acc[k]||0)+1;return acc;},{lula:0,flavio:0,outro:0,empate:0,sem:0});
-
-  const calc=(name,arr)=>{
-    const loaded=arr.filter(i=>i.loaded);
-    const lula=loaded.reduce((a,i)=>a+i.lulaVotes,0);
-    const flavio=loaded.reduce((a,i)=>a+i.flavioVotes,0);
-    const d=duelDiff(lula,flavio);
-    const pair=Math.max(1,lula+flavio);
-    const wins=loaded.reduce((acc,i)=>{const k=stateLeadType(i);acc[k]=(acc[k]||0)+1;return acc;},{lula:0,flavio:0,outro:0,empate:0});
-    return {name,loaded:loaded.length,total:arr.length,lula,flavio,d,lulaShare:100*lula/pair,flavioShare:100*flavio/pair,wins};
-  };
-
-  const regions=regionOrder.map(name=>calc(name,infos.filter(i=>i.reg===name)));
-  const brasil=calc('Brasil — 27 UFs',infos);
-  const regionCounts=regions.reduce((acc,r)=>{const k=r.d.leader==='Lula'?'lula':r.d.leader==='Flávio Bolsonaro'?'flavio':'empate';acc[k]++;return acc;},{lula:0,flavio:0,empate:0});
-
-  $('statesLula').textContent=stateCounts.lula;
-  $('statesFlavio').textContent=stateCounts.flavio;
-  $('statesOther').textContent=stateCounts.outro+stateCounts.empate;
-  $('statesLulaHint').textContent=`${stateCounts.lula} de 27 UFs • ${stateCounts.sem} sem dados`;
-  $('statesFlavioHint').textContent=`${stateCounts.flavio} de 27 UFs • ${stateCounts.sem} sem dados`;
-  $('statesOtherHint').textContent=`Outros ${stateCounts.outro} • Empates ${stateCounts.empate}`;
-  $('regionsLead').textContent=`L ${regionCounts.lula} × F ${regionCounts.flavio}`;
-  $('regionsLeadHint').textContent=`5 regiões • empates ${regionCounts.empate}`;
-
-  const cards=[...regions];
-  $('regionSummaryGrid').innerHTML=cards.map(r=>{
-    const isNE=r.name==='Nordeste';
-    const diffText=r.d.leader==='Empate'?'Empate em votos':`${esc(r.d.leader)} +${int(r.d.diff)}`;
-    const leadClass=r.d.leader==='Lula'?'lula':r.d.leader==='Flávio Bolsonaro'?'flavio':'empate';
-    const leadLabel=r.d.leader==='Empate'?'EMPATE':r.d.leader==='Lula'?'LULA':'FLÁVIO BOLSONARO';
-    const cls=['regionSummaryCard']; if(isNE)cls.push('nordeste');
-    return `<article class="${cls.join(' ')}">
-      <div class="regionTitleRow"><div class="regionTitle">${esc(r.name)}</div><div class="regionUFs">${r.loaded}/${r.total} UFs</div></div>
-      <div class="regionalLeader ${leadClass}"><span>Líder na região</span><strong>${leadLabel}</strong></div>
-      <div class="regionVotes">
-        <div class="regionVoteBox lula"><div class="regionVoteLabel">Lula</div><div class="regionVoteValue">${int(r.lula)}</div></div>
-        <div class="regionVoteBox flavio"><div class="regionVoteLabel">Flávio Bolsonaro</div><div class="regionVoteValue">${int(r.flavio)}</div></div>
-      </div>
-      <div class="regionBar"><i class="lulaSeg" style="width:${Math.max(0,Math.min(100,r.lulaShare))}%"></i><i class="flavioSeg" style="width:${Math.max(0,Math.min(100,r.flavioShare))}%"></i></div>
-      <div class="regionDiff">Diferença: <strong>${diffText}</strong></div>
-      <div class="stateLeadLine"><strong>Estados da região:</strong> Lula ${r.wins.lula} • Flávio ${r.wins.flavio} • Outros ${r.wins.outro} • Empate ${r.wins.empate}</div>
-    </article>`;
+const endpoint26=()=>`${BASE26}/${PRES26.e}/dados/br/br-c0001-e006257-u.json`;
+const stateEndpoint26=uf=>`${BASE26}/6257/dados/${uf}/${uf}-c0001-e006257-u.json`;
+const stateEndpoint22=uf=>`${BASE22}/${uf}/${uf}-c0001-e000544-r.json`;
+function candidates(d){const out=[];const cargo=(d?.carg||[])[0];for(const agr of (cargo?.agr||[])){for(const par of (agr?.par||[])){for(const c of (par?.cand||[])){out.push({...c,party:par.sg||'',partyName:par.nm||'',group:agr.nm||''});}}}return out.sort((a,b)=>num(b.vap)-num(a.vap)||String(a.nmu||a.nm).localeCompare(String(b.nmu||b.nm),'pt-BR'))}
+function candidates22(d){return (d?.cand||[]).map(c=>({...c,party:c.cc||''})).sort((a,b)=>num(b.vap)-num(a.vap))}
+function findLula(all){return all.find(c=>c.n==='13'||norm(c.nmu||c.nm).includes('LULA'))}
+function findFlavio(all){return all.find(c=>c.n==='22'||norm(c.nmu||c.nm).includes('FLAVIO BOLSONARO')||norm(c.nmu||c.nm)==='BOLSONARO')}
+function findBolsonaro22(all){return all.find(c=>c.n==='22'||norm(c.nm||c.nmu).includes('JAIR BOLSONARO')||norm(c.nm||c.nmu)==='BOLSONARO')}
+function leaderKey(c){if(!c)return 'outro';if(findLula([c]))return 'lula';if(findFlavio([c]))return 'flavio';return 'outro'}
+function shortName(c){if(!c)return 'Sem dados';if(findLula([c]))return 'Lula';if(findFlavio([c]))return 'Flávio';return c.nmu||c.nm||'Outro'}
+function duel(a,b){const av=num(a),bv=num(b),diff=Math.abs(av-bv);return {diff,leader:av===bv?'Empate':av>bv?'Lula':'Flávio Bolsonaro',short:av===bv?'Empate':av>bv?'Lula':'Flávio'}}
+function stateInfo(meta,d){if(!d)return {...meta,loaded:false,all:[],leader:null,leaderType:'outro',lulaVotes:0,lulaPct:0,flavioVotes:0,flavioPct:0,totalPct:0,pending:0};const all=candidates(d),l=findLula(all),f=findFlavio(all),leader=all[0]||null;const te=num(d.e?.te),est=num(d.e?.est);return {...meta,loaded:true,raw:d,all,leader,leaderType:leaderKey(leader),lulaVotes:num(l?.vap),lulaPct:pnum(l?.pvap),flavioVotes:num(f?.vap),flavioPct:pnum(f?.pvap),totalPct:pnum(d.s?.pst),sectionsDone:num(d.s?.st),sectionsTotal:num(d.s?.ts),pending:Math.max(0,te-est)}}
+function stateInfo22(meta,d){if(!d)return {...meta,loaded:false,lulaVotes:0,lulaPct:0,bolsoVotes:0,bolsoPct:0};const all=candidates22(d),l=findLula(all),b=findBolsonaro22(all);return {...meta,loaded:true,lulaVotes:num(l?.vap),lulaPct:pnum(l?.pvap),bolsoVotes:num(b?.vap),bolsoPct:pnum(b?.pvap)}}
+function nav(){ $('nav').addEventListener('click',e=>{const b=e.target.closest('button[data-view]');if(!b)return;S.view=b.dataset.view;document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${S.view}`));if(S.view==='history')renderHistory();if(S.view==='polls')renderPolls();if(S.view==='scenarios')renderSimulation();window.scrollTo({top:0,behavior:'smooth'})}) }
+function renderAll(){renderLive();renderMap();renderRegions();renderRankings();renderMath();renderHistory();renderPolls();renderSimulation()}
+function renderLive(){const d=S.data;if(!d){$('liveMessage').className='notice';$('liveMessage').textContent='Aguardando dados oficiais do TSE…';return}const all=candidates(d),l=findLula(all),f=findFlavio(all),leader=all[0],second=all[1],prog=pnum(d.s?.pst);$('kProgress').textContent=pct(prog);$('kSections').textContent=`${int(d.s?.st)} de ${int(d.s?.ts)} seções`;$('kLeader').textContent=shortName(leader);$('kLeaderPct').textContent=`${int(leader?.vap)} votos • ${pct(leader?.pvap)}`;const topDiff=Math.max(0,num(leader?.vap)-num(second?.vap));$('kDiffVotes').textContent=int(topDiff);$('kDiffVotesHint').textContent=second?`${shortName(leader)} à frente de ${shortName(second)}`:'entre os dois primeiros';$('kDiffPP').textContent=dec(Math.abs(pnum(leader?.pvap)-pnum(second?.pvap)),2)+' p.p.';$('kTime').textContent=d.ht||d.hg||'—';$('kDate').textContent=d.dt||d.dg||'—';$('liveMeta').textContent=`Brasil + exterior • ${pct(prog)} das seções • ${d.and==='f'?'finalizado':d.and==='p'?'parcial':'em totalização'}`;$('progressBar').style.width=Math.max(0,Math.min(100,prog))+'%';$('liveMessage').classList.add('hidden');if(l&&f){$('duelTop').classList.remove('hidden');$('duelBar').classList.remove('hidden');$('lulaVotes').textContent=int(l.vap);$('lulaPct').textContent=pct(l.pvap);$('flavioVotes').textContent=int(f.vap);$('flavioPct').textContent=pct(f.pvap);const pair=Math.max(1,num(l.vap)+num(f.vap));$('lulaSeg').style.width=(100*num(l.vap)/pair)+'%';$('flavioSeg').style.width=(100*num(f.vap)/pair)+'%'}$('candidateList').innerHTML=all.map((c,i)=>`<article class="cand"><div class="rank">${i+1}º</div><div><div class="name">${esc(c.nmu||c.nm||'Candidato')} ${c.st?`<span class="chip">${esc(c.st)}</span>`:''}</div><div class="details"><span>Nº ${esc(c.n)}</span><span>•</span><span>${esc(c.party||'Partido não informado')}</span></div><div class="bar"><i style="width:${Math.min(100,pnum(c.pvap))}%"></i></div></div><div class="votes"><strong>${int(c.vap)}</strong><div class="pct">${pct(c.pvap)}</div></div></article>`).join('');updateStateLeadKpis();captureSnapshot();renderChart()}
+function updateStateLeadKpis(){const infos=UFS.map(m=>stateInfo(m,S.states[m.uf]));const loaded=infos.filter(i=>i.loaded);const l=loaded.filter(i=>i.leaderType==='lula').length,f=loaded.filter(i=>i.leaderType==='flavio').length;$('kStatesLula').textContent=l;$('kStatesFlavio').textContent=f;const regs=regionStats();const rl=regs.filter(r=>r.leader==='Lula').length,rf=regs.filter(r=>r.leader==='Flávio Bolsonaro').length;$('kRegions').textContent=`L ${rl} × F ${rf}`}
+function captureSnapshot(){if(!S.data)return;const all=candidates(S.data),l=findLula(all),f=findFlavio(all);if(!l||!f)return;const p=pnum(S.data.s?.pst);let saved=[];try{saved=JSON.parse(localStorage.getItem('pres2026_history_v1')||'[]')}catch(e){}const last=saved[saved.length-1];if(!last||Math.abs(p-last.p)>=.05){saved.push({p,lula:pnum(l.pvap),flavio:pnum(f.pvap),label:S.data.ht||''});saved=saved.slice(-180);try{localStorage.setItem('pres2026_history_v1',JSON.stringify(saved))}catch(e){}}S.history=saved}
+function renderChart(){const svg=$('liveChart');if(!svg)return;const pts=[...HISTORY_SEEDS,...(S.history||[])].filter(x=>x.p>=0&&x.p<=100).sort((a,b)=>a.p-b.p);const ded=[];for(const x of pts){const prev=ded[ded.length-1];if(prev&&Math.abs(prev.p-x.p)<.001)ded[ded.length-1]=x;else ded.push(x)}const W=1000,H=300,m={l:50,r:20,t:18,b:35},iw=W-m.l-m.r,ih=H-m.t-m.b;const X=p=>m.l+iw*p/100,Y=p=>m.t+ih*(55-p)/20;let out='';for(let x=0;x<=100;x+=20){const xx=X(x);out+=`<line x1="${xx}" y1="${m.t}" x2="${xx}" y2="${H-m.b}" stroke="#22324a" stroke-width="1"/><text x="${xx}" y="${H-10}" fill="#95a4ba" font-size="11" text-anchor="middle">${x}%</text>`}for(let y=35;y<=55;y+=5){const yy=Y(y);out+=`<line x1="${m.l}" y1="${yy}" x2="${W-m.r}" y2="${yy}" stroke="#22324a" stroke-width="1"/><text x="8" y="${yy+4}" fill="#95a4ba" font-size="11">${y}%</text>`}const line=(key,color)=>{if(!ded.length)return '';const p=ded.map(z=>`${X(z.p)},${Y(z[key])}`).join(' ');return `<polyline points="${p}" fill="none" stroke="${color}" stroke-width="4" vector-effect="non-scaling-stroke"/>`};out+=line('lula','#d46a6a')+line('flavio','#4ba3ff');ded.forEach(z=>{out+=`<circle cx="${X(z.p)}" cy="${Y(z.lula)}" r="4" fill="#d46a6a"/><circle cx="${X(z.p)}" cy="${Y(z.flavio)}" r="4" fill="#4ba3ff"/>`});svg.innerHTML=out}
+function renderMath(){const infos=UFS.map(m=>stateInfo(m,S.states[m.uf])).filter(i=>i.loaded);if(!infos.length||!S.data){for(const id of ['mathPending','mathPendingPct','mathEstValid','mathRates','mathNetNeed','mathNetHint'])$(id).textContent='—';return}const electorate=infos.reduce((a,i)=>a+num(i.raw.e?.te),0),reached=infos.reduce((a,i)=>a+num(i.raw.e?.est),0),turnout=infos.reduce((a,i)=>a+num(i.raw.e?.c),0),pending=Math.max(0,electorate-reached);const validKnown=infos.reduce((a,i)=>a+i.all.reduce((s,c)=>s+num(c.vap),0),0);const turnoutRate=reached?turnout/reached:0,validRate=turnout?validKnown/turnout:0,estValid=pending*turnoutRate*validRate;$('mathPending').textContent=int(pending);$('mathPendingPct').textContent=electorate?`${dec(100*pending/electorate,2)}% do eleitorado das 27 UFs`:'—';$('mathEstValid').textContent=int(estValid);$('mathRates').textContent=`comparecimento observado ${dec(100*turnoutRate,2)}% • válidos/comparecimento ${dec(100*validRate,2)}%`;const all=candidates(S.data),first=all[0],second=all[1],gap=Math.max(0,num(first?.vap)-num(second?.vap));const net=estValid?100*gap/estValid:Infinity;$('mathNetNeed').textContent=Number.isFinite(net)?dec(net,1)+'%':'—';$('mathNetHint').textContent=second?`${shortName(second)} precisa ganhar do líder por ${int(gap+1)} votos líquidos entre os novos votos`:'—';const twoWay=estValid?50+50*gap/estValid:Infinity;$('mathNotice').innerHTML=estValid<=0?'Não há base suficiente para estimar novos votos válidos.':estValid<gap?`Pela estimativa atual, o volume de votos válidos ainda a entrar (${int(estValid)}) é menor que a diferença entre os dois primeiros (${int(gap)}). <strong>Isso é uma estimativa baseada nas taxas observadas, não uma certificação matemática do resultado.</strong>`:`O segundo colocado precisa obter uma vantagem líquida equivalente a <strong>${dec(net,1)}%</strong> do pool estimado de novos votos válidos. Em uma hipótese artificial em que todos esses novos votos fossem apenas dos dois líderes, isso exigiria cerca de <strong>${dec(twoWay,1)}%</strong> para o segundo colocado contra ${dec(100-twoWay,1)}% para o líder.`}
+function renderMap(){const infos=UFS.map(m=>stateInfo(m,S.states[m.uf]));const loaded=infos.filter(i=>i.loaded);if(!loaded.length){$('tileMap').innerHTML='<div class="notice">Aguardando dados das UFs…</div>';return}if(!infos.some(i=>i.uf===S.selectedUf&&i.loaded))S.selectedUf=(loaded.find(i=>i.uf==='pa')||loaded[0]).uf;$('tileMap').innerHTML=infos.map(i=>{const cls=['stateTile',`leader-${i.leaderType}`];if(i.uf===S.selectedUf)cls.push('active');if(i.reg==='Nordeste')cls.push('ne');return `<button class="${cls.join(' ')}" data-uf="${i.uf}" style="grid-column:${i.x};grid-row:${i.y}"><div class="tileTop"><div class="uf">${i.sigla}</div><div class="regTag">${esc(i.reg)}</div></div><div><div class="leaderShort">${i.loaded?esc(shortName(i.leader)):'Sem dados'}</div><div class="tileMeta">L ${int(i.lulaVotes)} / F ${int(i.flavioVotes)}</div><div class="tilePct">${i.loaded?pct(i.totalPct):'—'}</div></div></button>`}).join('');$('tileMap').onclick=e=>{const b=e.target.closest('.stateTile[data-uf]');if(!b)return;S.selectedUf=b.dataset.uf;renderMap()};const s=infos.find(i=>i.uf===S.selectedUf)||loaded[0],d=duel(s.lulaVotes,s.flavioVotes),badge=s.leaderType==='lula'?'lula':s.leaderType==='flavio'?'flavio':'other';$('stateDetail').innerHTML=`<h4>${esc(s.nome)} (${s.sigla})</h4><div class="desc">${esc(s.reg)} • ${s.loaded?pct(s.totalPct):'—'} totalizado</div><div class="miniGrid"><div class="miniCard"><div class="miniLabel">Líder</div><div class="miniValue">${s.loaded?esc(shortName(s.leader)):'—'}</div><div class="miniHint"><span class="leaderBadge ${badge}">${s.loaded?pct(s.leader?.pvap):'—'}</span></div></div><div class="miniCard"><div class="miniLabel">Diferença Lula × Flávio</div><div class="miniValue">${int(d.diff)}</div><div class="miniHint">${d.leader==='Empate'?'empate':`${esc(d.short)} à frente`}</div></div></div><div class="duelTop"><div class="duelBox red"><div class="duelName">Lula</div><div class="duelVotes">${int(s.lulaVotes)}</div><div class="duelPct">${pct(s.lulaPct)}</div></div><div class="duelBox blue"><div class="duelName">Flávio</div><div class="duelVotes">${int(s.flavioVotes)}</div><div class="duelPct">${pct(s.flavioPct)}</div></div></div><div class="notice"><strong>Eleitorado em seções ainda não totalizadas:</strong> ${int(s.pending)}</div>`}
+function regionStats(){const order=['Norte','Nordeste','Centro-Oeste','Sudeste','Sul'];return order.map(reg=>{const a=UFS.filter(m=>m.reg===reg).map(m=>stateInfo(m,S.states[m.uf])).filter(i=>i.loaded);const b=UFS.filter(m=>m.reg===reg).map(m=>stateInfo22(m,S.states22[m.uf])).filter(i=>i.loaded);const l=a.reduce((s,i)=>s+i.lulaVotes,0),f=a.reduce((s,i)=>s+i.flavioVotes,0),pair=Math.max(1,l+f),diff26=100*(l-f)/pair;const l22=b.reduce((s,i)=>s+i.lulaVotes,0),bo22=b.reduce((s,i)=>s+i.bolsoVotes,0),pair22=Math.max(1,l22+bo22),diff22=100*(l22-bo22)/pair22;const d=duel(l,f);return {reg,a,b,l,f,diff26,diff22,swing:b.length?diff26-diff22:null,leader:d.leader,wins:{lula:a.filter(i=>i.leaderType==='lula').length,flavio:a.filter(i=>i.leaderType==='flavio').length,other:a.filter(i=>i.leaderType==='outro').length}}})}
+function renderRegions(){const regs=regionStats();$('regionGrid').innerHTML=regs.map(r=>`<article class="regionCard ${r.reg==='Nordeste'?'nordeste':''}"><div class="regionTitleRow"><div class="regionTitle">${r.reg}</div><div class="regionUFs">${r.a.length}/${UFS.filter(x=>x.reg===r.reg).length} UFs</div></div><div class="regionalLeader"><span>Líder 2026</span><strong>${r.leader==='Empate'?'Empate':esc(r.leader)}</strong></div><div class="regionVotes"><div class="regionVoteBox red"><div class="miniLabel">Lula</div><div class="regionVoteValue">${int(r.l)}</div></div><div class="regionVoteBox blue"><div class="miniLabel">Flávio</div><div class="regionVoteValue">${int(r.f)}</div></div></div><div class="swing">Diferença 2026 (L−F): <strong>${pp(r.diff26)}</strong><br>Diferença 2022 (L−Bolsonaro): <strong>${r.b.length?pp(r.diff22):'carregando'}</strong><br>Swing: <strong>${r.swing==null?'—':pp(r.swing)}</strong></div></article>`).join('')}
+function renderRankings(){const infos=UFS.map(m=>stateInfo(m,S.states[m.uf])).filter(i=>i.loaded);const saldos=[...infos].sort((a,b)=>Math.abs(b.lulaVotes-b.flavioVotes)-Math.abs(a.lulaVotes-a.flavioVotes));$('stateRanking').innerHTML=saldos.slice(0,12).map((i,n)=>{const delta=i.lulaVotes-i.flavioVotes,who=delta===0?'Empate':delta>0?'Lula':'Flávio';return `<div class="rankRow"><div class="n">${n+1}º</div><div class="state"><strong>${i.nome} (${i.sigla})</strong><small>${i.reg} • ${pct(i.totalPct)} totalizado</small></div><div class="saldo ${delta>0?'neg':'pos'}">${who} +${int(Math.abs(delta))}</div><div class="pending">pendente: ${int(i.pending)} eleitores</div></div>`}).join('')||'<div class="notice">Aguardando estados.</div>';const pending=[...infos].sort((a,b)=>b.pending-a.pending);$('pendingRanking').innerHTML=pending.slice(0,10).map((i,n)=>`<div class="rankRow"><div class="n">${n+1}º</div><div class="state"><strong>${i.nome} (${i.sigla})</strong><small>${pct(i.totalPct)} totalizado</small></div><div class="saldo">${int(i.pending)}</div><div class="pending">eleitores em seções ainda não totalizadas</div></div>`).join('')}
+function current26History(){if(!S.data)return null;const all=candidates(S.data),a=all[0],b=all[1];if(!a||!b)return null;return {first:[{name:a.nmu||a.nm,votes:num(a.vap),pct:pnum(a.pvap)},{name:b.nmu||b.nm,votes:num(b.vap),pct:pnum(b.pvap)}]}}
+function renderHistory(){const h26=current26History(),years=[2018,2022,2026];const rows=years.map(y=>{const h=y===2026?h26:HIST[y];if(!h)return null;const a=h.first[0],b=h.first[1],gapVotes=Math.abs(a.votes-b.votes),gapPP=Math.abs(a.pct-b.pct);return {y,a,b,gapVotes,gapPP}}).filter(Boolean);const max=Math.max(1,...rows.map(r=>r.gapPP));$('historyCards').innerHTML=rows.map(r=>`<article class="electionCard"><div class="year">${r.y} • 1º turno</div><div class="electionTitle">${esc(r.a.name)}</div><div class="electionMeta">${pct(r.a.pct)} × ${pct(r.b.pct)} de ${esc(r.b.name)}<br>Diferença: <strong>${int(r.gapVotes)} votos • ${dec(r.gapPP,2)} p.p.</strong></div><div class="marginBar"><i style="width:${100*r.gapPP/max}%"></i></div></article>`).join('');$('historyTable').innerHTML=rows.map(r=>`<tr><td><strong>${r.y}</strong></td><td>${esc(r.a.name)}</td><td>${int(r.a.votes)}</td><td>${pct(r.a.pct)}</td><td>${esc(r.b.name)}</td><td>${int(r.b.votes)}</td><td>${pct(r.b.pct)}</td><td><strong>${int(r.gapVotes)}</strong><br><span class="muted">${dec(r.gapPP,2)} p.p.</span></td></tr>`).join('');const trs=[];for(const y of [2018,2022]){const h=HIST[y];for(let i=0;i<2;i++){const a=h.first[i],b=h.second[i],gain=b.votes-a.votes;trs.push(`<tr><td><strong>${y}</strong></td><td>${esc(a.name)}</td><td>${int(a.votes)} (${pct(a.pct)})</td><td>${int(b.votes)} (${pct(b.pct)})</td><td><strong>+${int(gain)}</strong></td><td>${i===0?'<strong>Eleito</strong>':'2º lugar'}</td></tr>`)}}$('turnTable').innerHTML=trs.join('')}
+function renderPolls(){
+  const liveAll=S.data?candidates(S.data):[];
+  const liveL=findLula(liveAll),liveF=findFlavio(liveAll);
+  const actual26=(liveL&&liveF)?[
+    {name:'Lula',votes:num(liveL.vap),pct:pnum(liveL.pvap)},
+    {name:'Flávio Bolsonaro',votes:num(liveF.vap),pct:pnum(liveF.pvap)}
+  ]:null;
+  const items=[
+    {y:2018,h:HIST[2018],label:'Bolsonaro × Haddad'},
+    {y:2022,h:HIST[2022],label:'Lula × Bolsonaro'},
+    {y:2026,h:{...HIST[2026],first:actual26},label:'Lula × Flávio'}
+  ];
+  $('pollCards').innerHTML=items.map(x=>{
+    const p=x.h.poll,first=x.h.first;
+    if(!first)return `<article class="pollCard"><div class="year">${x.y}</div><div class="electionTitle">${x.label}</div><div class="errBox">Aguardando urna de 2026.</div></article>`;
+    const pg=Math.abs(p[0].pct-p[1].pct),ag=Math.abs(first[0].pct-first[1].pct);
+    return `<article class="pollCard"><div class="year">${x.y} • última Datafolha</div><div class="electionTitle">${x.label}</div><div class="pollGap">${dec(pg,1)} p.p.</div><div class="errBox">gap na pesquisa<br><strong style="color:#eef5ff">Urna: ${dec(ag,2)} p.p.</strong><br>Diferença pesquisa→urna: ${dec(ag-pg,2)} p.p.</div></article>`
   }).join('');
+  $('pollTable').innerHTML=items.map(x=>{
+    const p=x.h.poll,first=x.h.first;
+    if(!first)return `<tr><td>${x.y}</td><td>${pct(p[0].pct)} × ${pct(p[1].pct)}</td><td>aguardando</td><td>—</td><td>—</td><td>${dec(Math.abs(p[0].pct-p[1].pct),2)} p.p.</td><td>—</td></tr>`;
+    const e1=Math.abs(p[0].pct-first[0].pct),e2=Math.abs(p[1].pct-first[1].pct),pg=Math.abs(p[0].pct-p[1].pct),ag=Math.abs(first[0].pct-first[1].pct);
+    return `<tr><td><strong>${x.y}</strong></td><td>${esc(p[0].name)} ${pct(p[0].pct)} × ${esc(p[1].name)} ${pct(p[1].pct)}</td><td>${esc(first[0].name)} ${pct(first[0].pct)} × ${esc(first[1].name)} ${pct(first[1].pct)}</td><td>${dec(e1,2)} p.p.</td><td>${dec(e2,2)} p.p.</td><td>${dec(pg,2)} p.p.</td><td><strong>${dec(ag,2)} p.p.</strong></td></tr>`
+  }).join('')
 }
-function renderTurnout(){
-  const panel=$('turnoutPanel');
-  if(S.active!=='pres'){panel.classList.add('hidden');return;}
-  panel.classList.remove('hidden');
-  const infos=PRES_UFS.map(meta=>buildStateInfo(meta,S.states[meta.uf]));
-  const loaded=infos.filter(i=>i.loaded);
-  if(!loaded.length){for(const id of ['tElectorate','tTurnout','tAbst','tVotes','tReached','tPending','tTurnoutVoteGap','tNationalElectorate'])$(id).textContent='—';return;}
-  const sumField=field=>loaded.reduce((a,i)=>a+num(i.raw?.e?.[field]||0),0);
-  const electorate=sumField('te');
-  const reached=sumField('est');
-  const turnout=sumField('c');
-  const abst=sumField('a');
-  const votes=loaded.reduce((a,i)=>a+num(i.raw?.v?.tv||0),0);
-  const pending=Math.max(0,electorate-reached);
-  const turnoutVoteGap=Math.max(0,turnout-votes);
-  const turnoutBase=Math.max(1,turnout+abst);
-  const turnoutPct=100*turnout/turnoutBase;
-  const abstPct=100*abst/turnoutBase;
-  const reachedPct=electorate?100*reached/electorate:0;
-  const pendingPct=electorate?100*pending/electorate:0;
-  $('tElectorate').textContent=int(electorate);
-  $('tElectorateHint').textContent=`${loaded.length}/27 UFs com dados`;
-  $('tTurnout').textContent=int(turnout);
-  $('tTurnoutPct').textContent=`${pct(turnoutPct)} entre as seções instaladas já totalizadas`;
-  $('tTurnoutBar').style.width=Math.max(0,Math.min(100,turnoutPct))+'%';
-  $('tAbst').textContent=int(abst);
-  $('tAbstPct').textContent=`${pct(abstPct)} nas seções instaladas já totalizadas`;
-  $('tVotes').textContent=int(votes);
-  $('tReached').textContent=int(reached);
-  $('tReachedPct').textContent=`${pct(reachedPct)} do eleitorado apto`;
-  $('tPending').textContent=int(pending);
-  $('tPendingPct').textContent=`${pct(pendingPct)} do eleitorado apto`;
-  $('tTurnoutVoteGap').textContent=int(turnoutVoteGap);
-  const br=S.data.pres;
-  $('tNationalElectorate').textContent=br?.e?.te!=null?int(br.e.te):'—';
-  const ext=br?.e?.te!=null?Math.max(0,num(br.e.te)-electorate):null;
-  $('tNationalHint').textContent=ext==null?'arquivo nacional do TSE':`inclui exterior • diferença para 27 UFs: ${int(ext)}`;
-}
-function renderPresMap(){
-  const infos=PRES_UFS.map(meta=>buildStateInfo(meta,S.states[meta.uf]));
-  const loaded=infos.filter(i=>i.loaded);
-  if(!loaded.length){$('tileMap').innerHTML='<div class="notice">Aguardando dados dos estados…</div>'; $('stateDetail').innerHTML='Aguardando dados dos estados…'; $('neRows').innerHTML=''; $('allRows').innerHTML=''; return;}
-  if(!infos.some(i=>i.uf===S.selectedUf&&i.loaded)) S.selectedUf=(infos.find(i=>i.reg==='Nordeste'&&i.loaded)||infos.find(i=>i.loaded)||infos[0]).uf;
-  const byRegion=reg=>infos.filter(i=>i.reg===reg);
-  const ne=byRegion('Nordeste');
-  const countLeader=(arr,key)=>arr.filter(i=>i.loaded && i.leaderType===key).length;
-  $('sumBrasil').textContent=`${loaded.length}/27 UFs`;
-  $('sumNordeste').textContent=`Lula ${countLeader(ne,'lula')} • Flávio ${countLeader(ne,'flavio')} • Outros ${countLeader(ne,'outro')}`;
-  const neLula=ne.reduce((a,b)=>a+b.lulaVotes,0), neFla=ne.reduce((a,b)=>a+b.flavioVotes,0);
-  $('sumNEVotes').textContent=`Lula ${int(neLula)} • Flávio ${int(neFla)}`;
-  const neDiff=duelDiff(neLula,neFla); $('sumNEDiff').textContent=neDiff.leader==='Empate'?'Empate':`${neDiff.short} +${int(neDiff.diff)}`;
-
-  $('tileMap').innerHTML=infos.map(info=>{const cls=['stateTile',`leader-${info.leaderType}`]; if(info.uf===S.selectedUf)cls.push('active'); if(info.reg==='Nordeste')cls.push('ne');
-    const who=info.loaded?info.leaderShort:'Sem dados'; const total=info.loaded?pct(info.totalPct):'—'; const votes=info.loaded?`${int(info.lulaVotes)} / ${int(info.flavioVotes)}`:'Sem dados';
-    return `<button class="${cls.join(' ')}" data-uf="${info.uf}" style="grid-column:${info.x};grid-row:${info.y}" title="${esc(info.nome)}"><div class="tileTop"><div class="uf">${info.sigla}</div><div class="regTag">${esc(info.reg)}</div></div><div><div class="leaderShort">${esc(who)}</div><div class="tileMeta">Lula/Flávio: ${esc(votes)}</div><div class="tilePct">Totalização ${esc(total)}</div></div></button>`;
-  }).join('');
-
-  $('tileMap').onclick=e=>{const b=e.target.closest('.stateTile[data-uf]'); if(!b)return; S.selectedUf=b.dataset.uf; renderPresMap();};
-
-  const selected=infos.find(i=>i.uf===S.selectedUf) || infos[0];
-  const leaderBadgeClass=selected.leaderType==='lula'?'lula':selected.leaderType==='flavio'?'flavio':'other';
-  $('stateDetail').innerHTML=`<h4>${esc(selected.nome)} (${selected.sigla})</h4>
-    <div class="detailMeta">${esc(selected.reg)} • atualização ${esc(selected.updatedTime||'—')} • ${esc(selected.updatedDate||'—')}</div>
-    <div class="miniGrid">
-      <div class="miniCard"><div class="miniLabel">Totalização</div><div class="miniValue">${selected.loaded?pct(selected.totalPct):'—'}</div><div class="miniHint">${selected.loaded?`${int(selected.sectionsDone)} de ${int(selected.sectionsTotal)} seções`:'Aguardando dados'}</div></div>
-      <div class="miniCard"><div class="miniLabel">Líder no estado</div><div class="miniValue">${selected.loaded?esc(shortLeaderName(selected.leader)):'—'}</div><div class="miniHint">${selected.loaded?`<span class="leaderBadge ${leaderBadgeClass}">${esc(selected.leader?.party||'')} • ${pct(selected.leader?.pvap||0)}</span>`:'—'}</div></div>
-    </div>
-    <div class="duel">
-      <div class="duelBox lula"><h5>Lula</h5><div class="dv">${int(selected.lulaVotes)}</div><div class="dp">${pct(selected.lulaPct)}</div></div>
-      <div class="duelBox flavio"><h5>Flávio Bolsonaro</h5><div class="dv">${int(selected.flavioVotes)}</div><div class="dp">${pct(selected.flavioPct)}</div></div>
-    </div>
-    <div class="notice" style="margin-top:12px"><strong>Diferença:</strong> ${(()=>{const x=duelDiff(selected.lulaVotes,selected.flavioVotes);return x.leader==='Empate'?'empate':`${esc(x.leader)} está ${int(x.diff)} votos à frente`;})()}</div>
-    <div class="regionCard" style="margin-top:12px;padding:12px"><h4 style="font-size:14px">Top do estado</h4><div class="regionRows">${selected.all.slice(0,4).map((c,i)=>`<div class="regionRow"><div><strong>${i+1}º</strong></div><div><div class="ufname">${esc(c.nmu||c.nm||'Candidato')}</div><div class="ufmeta">${esc(c.party||'—')} • Nº ${esc(c.n||'')}</div></div><div class="leadVal"><strong>${int(c.vap)}</strong><div>${pct(c.pvap)}</div></div></div>`).join('')||'<div class="muted">Sem dados dos candidatos.</div>'}</div></div>`;
-
-  $('neRows').innerHTML=ne.map(i=>{
-    const badge=i.leaderType==='lula'?'lula':i.leaderType==='flavio'?'flavio':'other';
-    return `<div class="regionRow"><div><strong>${i.sigla}</strong></div><div><div class="ufname">${esc(i.nome)}</div><div class="ufmeta">${pct(i.totalPct)} • Lula ${pct(i.lulaPct)} • Flávio ${pct(i.flavioPct)} • Dif. ${int(duelDiff(i.lulaVotes,i.flavioVotes).diff)}</div></div><div class="leadVal"><strong class="leaderBadge ${badge}">${esc(shortLeaderName(i.leader))}</strong><div>${i.loaded?int(i.leader?.vap||0):'—'} votos</div></div></div>`;
-  }).join('');
-
-  const allSorted=[...infos].sort((a,b)=>a.reg.localeCompare(b.reg,'pt-BR')||a.nome.localeCompare(b.nome,'pt-BR'));
-  $('allRows').innerHTML=allSorted.map(i=>{
-    const badge=i.leaderType==='lula'?'lula':i.leaderType==='flavio'?'flavio':'other';
-    return `<div class="allRow ${i.reg==='Nordeste'?'nordeste':''}"><div><strong>${i.sigla}</strong></div><div class="stateName"><strong>${esc(i.nome)}</strong><small>${esc(i.reg)}</small></div><div>${i.loaded?pct(i.totalPct):'—'}</div><div><span class="leaderBadge ${badge}">${esc(shortLeaderName(i.leader))}</span></div><div>${int(i.lulaVotes)} <span class="muted">(${pct(i.lulaPct)})</span></div><div>${int(i.flavioVotes)} <span class="muted">(${pct(i.flavioPct)})</span></div><div>${(()=>{const x=duelDiff(i.lulaVotes,i.flavioVotes);return i.loaded?(x.leader==='Empate'?'Empate':`${esc(x.short)} +${int(x.diff)}`):'—';})()}</div></div>`;
-  }).join('');
-}
-$('search').addEventListener('input',render);
-$('refresh').addEventListener('click',()=>refresh(true));
-tabs();render();refresh(true);
-setInterval(()=>{S.seconds=Math.max(0,S.seconds-1);$('timer').textContent=S.seconds+'s';if(S.seconds===0)refresh(false)},1000);
+function simCandidates(){if(!S.data)return [];const all=candidates(S.data);return all.filter(c=>!findLula([c])&&!findFlavio([c])&&num(c.vap)>0)}
+function initSim(){for(const c of simCandidates()){const key=c.sqcand||c.n||c.nm;if(!S.sim[key])S.sim[key]={turnout:100,flavio:50}}}
+function renderSimulation(){if(!S.data){$('simControls').innerHTML='<div class="notice">Aguardando os votos oficiais de 2026.</div>';$('simResult').innerHTML='';return}initSim();const others=simCandidates();$('simControls').innerHTML=others.map(c=>{const key=c.sqcand||c.n||c.nm,v=S.sim[key];return `<div class="sliderCard" data-key="${esc(key)}"><div class="sliderHead"><strong>${esc(c.nmu||c.nm)}</strong><span class="sliderVotes">${int(c.vap)} votos</span></div><div class="sliderRow"><label>Participa no 2º turno</label><input data-field="turnout" type="range" min="0" max="100" value="${v.turnout}"><div class="sliderVal" data-val="turnout">${v.turnout}%</div></div><div class="sliderRow"><label>% para Flávio*</label><input data-field="flavio" type="range" min="0" max="100" value="${v.flavio}"><div class="sliderVal" data-val="flavio">${v.flavio}%</div></div><div class="miniHint">*dos votos desse candidato que você considera que compareceriam. O restante vai para Lula.</div></div>`}).join('')||'<div class="notice">Nenhum outro candidato com votos encontrado.</div>';$('simControls').oninput=e=>{const input=e.target.closest('input[type=range]');if(!input)return;const card=input.closest('[data-key]'),key=card.dataset.key,field=input.dataset.field;S.sim[key][field]=Number(input.value);card.querySelector(`[data-val="${field}"]`).textContent=input.value+'%';calcSimulation()};calcSimulation()}
+function calcSimulation(){const all=candidates(S.data),l=findLula(all),f=findFlavio(all);if(!l||!f)return;let lv=num(l.vap),fv=num(f.vap),unused=0;for(const c of simCandidates()){const key=c.sqcand||c.n||c.nm,v=S.sim[key]||{turnout:100,flavio:50},pool=num(c.vap)*v.turnout/100;fv+=pool*v.flavio/100;lv+=pool*(100-v.flavio)/100;unused+=num(c.vap)-pool}const total=Math.max(1,lv+fv),lp=100*lv/total,fp=100*fv/total,winner=lp===fp?'Empate':lp>fp?'Lula':'Flávio Bolsonaro',diff=Math.abs(lv-fv);$('simResult').innerHTML=`<div class="simWinner">Resultado da hipótese<strong>${winner}</strong></div><div class="duelTop"><div class="duelBox red"><div class="duelName">Lula</div><div class="duelVotes">${int(lv)}</div><div class="duelPct">${dec(lp,2)}%</div></div><div class="duelBox blue"><div class="duelName">Flávio</div><div class="duelVotes">${int(fv)}</div><div class="duelPct">${dec(fp,2)}%</div></div></div><div class="splitbar"><i class="redSeg" style="width:${lp}%"></i><i class="blueSeg" style="width:${fp}%"></i></div><div class="notice"><strong>Diferença simulada:</strong> ${int(diff)} votos</div><div class="simNote">Base: votos do 1º turno já recebidos pelo TSE. Votos de Lula e Flávio são mantidos; os demais são redistribuídos conforme seus controles. ${unused?`${int(unused)} votos dos demais ficaram fora por redução de comparecimento definida por você.`:'Todos os votos dos demais foram redistribuídos.'}</div>`}
+async function load26(force=false){const res=await fetch(endpoint26()+(force?`?v=${Date.now()}`:''),{cache:'no-store'});if(!res.ok)throw new Error(`Brasil: HTTP ${res.status}`);const d=await res.json();if(force||S.idg!==d.idg){S.data=d;S.idg=d.idg}return d}
+async function loadState26(uf,force=false){const res=await fetch(stateEndpoint26(uf)+(force?`?v=${Date.now()}`:''),{cache:'no-store'});if(!res.ok)throw new Error(`${uf.toUpperCase()}: HTTP ${res.status}`);const d=await res.json();if(force||S.stateIdg[uf]!==d.idg){S.states[uf]=d;S.stateIdg[uf]=d.idg}return d}
+async function load22(){const jobs=UFS.map(async m=>{try{const r=await fetch(stateEndpoint22(m.uf),{cache:'force-cache'});if(!r.ok)throw new Error(String(r.status));S.states22[m.uf]=await r.json();return true}catch(e){return false}});const rs=await Promise.all(jobs);const ok=rs.filter(Boolean).length;$('hist2022Status').textContent=`2022: ${ok}/27 UFs carregadas`;renderRegions()}
+async function refresh(force=false){$('refresh').disabled=true;$('status').textContent='Atualizando…';const jobs=[load26(force),...UFS.map(m=>loadState26(m.uf,force))];const rs=await Promise.allSettled(jobs),ok=rs.filter(x=>x.status==='fulfilled').length;if(ok){$('dot').className='dot';$('status').textContent=`TSE conectado • ${ok}/${jobs.length}`;renderAll()}else{$('dot').className='dot err';$('status').textContent='Falha ao acessar o TSE';$('liveMessage').className='notice err';$('liveMessage').textContent='Não foi possível receber os arquivos oficiais agora.'}$('refresh').disabled=false;S.seconds=10;$('timer').textContent='10s'}
+$('refresh').addEventListener('click',()=>refresh(true));$('resetSim').addEventListener('click',()=>{S.sim={};renderSimulation()});
+nav();renderChart();renderHistory();renderPolls();refresh(true);load22();setInterval(()=>{S.seconds=Math.max(0,S.seconds-1);$('timer').textContent=S.seconds+'s';if(S.seconds===0)refresh(false)},1000);
 })();
 </script>
 </body>
