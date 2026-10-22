@@ -37,6 +37,8 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
 @media(max-width:980px){.mapWrap,.simGrid{grid-template-columns:1fr}.simResult{position:static}.rankRow{grid-template-columns:40px 1fr 120px}.rankRow .pending{grid-column:2/4;text-align:left}.regionGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.geoMap{min-height:280px}}
 @media(max-width:760px){.grid4,.grid3,.histCards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2,.duelTop,.miniGrid,.regionGrid{grid-template-columns:1fr}.cand{grid-template-columns:32px minmax(0,1fr) auto;gap:7px}.votes{min-width:88px}.votes strong{font-size:14px}.name{font-size:14px}.rankRow{grid-template-columns:34px 1fr}.rankRow .saldo,.rankRow .pending{grid-column:2;text-align:left}.sliderRow{grid-template-columns:100px 1fr 42px}}
 @media(max-width:480px){.grid4,.grid3,.histCards{grid-template-columns:1fr}.metric{min-height:auto}}
+.election-countdown{max-width:1220px;margin:auto;padding:4px 14px 12px;display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mut)}
+#electionCountdown{color:var(--gold);font-size:clamp(13px,3.5vw,17px);font-weight:800;font-variant-numeric:tabular-nums}.countdown-date{font-size:11px}
 </style>
 </head>
 <body>
@@ -44,6 +46,11 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
   <div class="header">
     <div><h1>Presidente 2026 — Segundo Turno</h1><div class="sub">Apuração oficial • 2º turno em 25/10 • comparações históricas</div></div>
     <div class="live"><span id="dot" class="dot"></span><span id="status">Conectando ao TSE…</span><span>•</span><span id="timer">10s</span></div>
+  </div>
+  <div class="election-countdown">
+    <span id="countdownLabel">Faltam para a eleição</span>
+    <span id="electionCountdown" role="timer" aria-live="off">Calculando…</span>
+    <span class="countdown-date">25/10/2026 às 8h • Brasília</span>
   </div>
   <nav id="nav" class="nav" aria-label="Seções do painel">
     <button data-view="live" class="active">Ao vivo</button>
@@ -333,6 +340,23 @@ async function refresh(force=false){
 $('refresh').addEventListener('click',()=>refresh(true));$('resetSim').addEventListener('click',()=>{S.sim={};renderSimulation()});
 nav();renderChart();renderHistory();renderPolls();renderMap();loadGeo();loadFirst26();load22();refresh(true);
 setInterval(()=>{if(!S.busy){S.seconds=Math.max(0,S.seconds-1);$('timer').textContent=S.seconds+'s';if(S.seconds===0)refresh(false)}updateClocks()},1000);
+})();
+</script>
+<script>
+(()=>{
+  const electionStart=Date.parse('2026-10-25T08:00:00-03:00');
+  function updateCountdown(){
+    const remaining=Math.max(0,Math.ceil((electionStart-Date.now())/1000));
+    const days=Math.floor(remaining/86400);
+    const hours=Math.floor((remaining%86400)/3600);
+    const minutes=Math.floor((remaining%3600)/60);
+    const seconds=remaining%60;
+    document.getElementById('countdownLabel').textContent=remaining>0?'Faltam para a eleição':'Contagem encerrada';
+    document.getElementById('electionCountdown').textContent=`${days} dias · ${String(hours).padStart(2,'0')} horas · ${String(minutes).padStart(2,'0')} minutos · ${String(seconds).padStart(2,'0')} segundos`;
+  }
+  updateCountdown();
+  setInterval(updateCountdown,1000);
+  document.addEventListener('visibilitychange',updateCountdown);
 })();
 </script>
 </body>
