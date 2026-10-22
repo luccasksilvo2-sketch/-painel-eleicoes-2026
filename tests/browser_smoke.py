@@ -106,6 +106,8 @@ class PanelTests(unittest.TestCase):
                     data['t'] = '1'
             else:
                 data = result(uf, 700 if self.changed else 500 if self.tie else 600, 500 if self.tie else 400, '1' if first else '2')
+            if first:
+                data['carg'][0]['agr'][0]['par'][0]['cand'].append({'n': '99', 'nmu': 'CANDIDATO FICTÍCIO', 'vap': '200', 'pvap': '16,67'})
             if not first and self.mode == 'wrong_turn':
                 data['t'] = '1'
             if not first and self.mode == 'malformed':
@@ -147,6 +149,16 @@ class PanelTests(unittest.TestCase):
         self.assertIn('não confirmado', self.page.locator('#status').inner_text())
         self.assertEqual(self.page.locator('#candidateList .cand').count(), 0)
         self.assertFalse(any('/6258/dados/' in u for u in self.requests))
+
+    def test_configuration_unavailable_after_valid_result_disables_collection(self):
+        self.open()
+        self.mode = 'unavailable'
+        self.refresh()
+        self.map()
+        self.assertTrue(self.page.locator('#loadCities').is_disabled())
+        self.assertIn('Aguardando divulgação', self.page.locator('#munMessage').inner_text())
+        self.assertEqual(self.page.locator('#lulaVotes').inner_text(), '600')
+        self.assertIn('dados anteriores', self.page.locator('#dataStatus').inner_text())
 
     def test_network_failure_then_retry_configuration(self):
         self.mode = 'config_once'
@@ -263,6 +275,27 @@ class PanelTests(unittest.TestCase):
         self.assertIn('São Paulo', self.page.locator('#munSubtitle').inner_text())
         self.assertEqual(self.page.locator('#topLula .cityLine').count(), 0)
         self.assertFalse(self.page.locator('#loadCities').is_disabled())
+
+    def test_simulator_controls_reset_and_official_score_is_unchanged(self):
+        self.open()
+        self.page.locator('[data-view="scenarios"]').click()
+        self.page.wait_for_selector('#simControls input[data-field="flavio"]')
+        before = self.page.locator('#simResult').inner_text()
+        self.page.locator('#simControls input[data-field="flavio"]').fill('80')
+        self.assertNotEqual(self.page.locator('#simResult').inner_text(), before)
+        self.assertIn('SIMULAÇÃO HIPOTÉTICA', self.page.locator('#simResult').inner_text())
+        self.assertEqual(self.page.locator('#lulaVotes').inner_text(), '600')
+        self.page.locator('#resetSim').click()
+        self.assertEqual(self.page.locator('#simResult').inner_text(), before)
+
+    def test_geographic_failure_keeps_accessible_state_grid(self):
+        self.context.route('**/assets/estados.geojson', lambda route: route.fulfill(status=200, content_type='application/json', body='{}'))
+        self.page.goto(self.url)
+        self.page.wait_for_function("document.querySelector('.geoFallback').open")
+        self.map()
+        self.assertEqual(self.page.locator('#tileMap .stateTile').count(), 27)
+        self.page.locator('#tileMap [data-uf="sp"]').click()
+        self.assertIn('São Paulo', self.page.locator('#stateDetail').inner_text())
 
     def test_unverified_poll_not_published(self):
         self.open()

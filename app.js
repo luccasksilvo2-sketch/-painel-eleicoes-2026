@@ -1311,6 +1311,7 @@
     try {
       const available = await checkAvailability(force);
       if (!available) {
+        renderMuniStatus();
         $("dot").className = "dot err";
         $("status").textContent =
           "2º turno não confirmado na configuração do TSE";
