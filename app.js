@@ -1175,7 +1175,18 @@
     return results;
   }
   const tseDate = ElectionCore.timestamp;
+  const ELECTION_START = Date.parse("2026-10-25T08:00:00-03:00");
+  function updateElectionCountdown() {
+    const remaining = Math.max(0, Math.ceil((ELECTION_START - Date.now()) / 1000));
+    const days = Math.floor(remaining / 86400);
+    const hours = Math.floor((remaining % 86400) / 3600);
+    const minutes = Math.floor((remaining % 3600) / 60);
+    const seconds = remaining % 60;
+    $("countdownLabel").textContent = remaining > 0 ? "Faltam para a eleição" : "Contagem encerrada";
+    $("electionCountdown").textContent = `${days} dias · ${String(hours).padStart(2, "0")} horas · ${String(minutes).padStart(2, "0")} minutos · ${String(seconds).padStart(2, "0")} segundos`;
+  }
   function updateClocks() {
+    updateElectionCountdown();
     const d = S.data,
       stamp = d ? tseDate(d.dt, d.ht) : null;
     $("kUnchanged").textContent = S.resultChangedAt
@@ -1377,6 +1388,7 @@
     updateClocks();
   }, 1000);
   document.addEventListener("visibilitychange", () => {
+    updateElectionCountdown();
     if (!document.hidden && S.seconds === 0) refresh(false);
   });
   window.addEventListener("online", () => refresh(true));
