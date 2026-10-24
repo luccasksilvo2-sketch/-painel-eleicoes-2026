@@ -40,6 +40,7 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
 .election-countdown{max-width:1220px;margin:auto;padding:4px 14px 12px;display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mut)}
 #electionCountdown{color:var(--gold);font-size:clamp(13px,3.5vw,17px);font-weight:800;font-variant-numeric:tabular-nums}.countdown-date{font-size:11px}
 </style>
+<link rel="stylesheet" href="compare.css">
 </head>
 <body>
 <header>
@@ -57,6 +58,7 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
     <button data-view="map">Brasil / UFs</button>
     <button data-view="history">2018 × 2022 × 2026</button>
     <button data-view="polls">Pesquisas × urnas</button>
+    <button data-view="compare">Comparativo 1º × 2º Turno</button>
     <button data-view="scenarios">Simulação com 1º turno</button>
   </nav>
 </header>
@@ -185,6 +187,26 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
   </section>
 </section>
 
+<section id="view-compare" class="view"><section class="card">
+<h2>Comparativo 1º × 2º Turno</h2>
+<p class="notice">Fonte exclusiva desta aba: resultados oficiais do TSE. Ganho ou perda de votos não comprova transferência individual de eleitores. Abstenção e comparecimento também alteram os totais.</p>
+<div class="cmp-filters">
+<label>Região<select id="cmpRegion"></select></label><label>Estado / DF<select id="cmpState"></select></label>
+<label>Município (apague para consultar estado/Brasil)<input id="cmpCity" list="cmpCities" autocomplete="off"><datalist id="cmpCities"></datalist></label>
+<label>Candidato<select id="cmpCandidate"><option value="both">Ambos</option><option value="lula">Lula</option><option value="flavio">Flávio Bolsonaro</option></select></label>
+<label>Ordenação<select id="cmpSort"><option value="gain">Maior crescimento</option><option value="loss">Maior perda</option><option value="votes">Votos no segundo turno</option><option value="percent">Variação percentual</option></select></label></div>
+<button id="cmpLoad">Consultar seleção</button> <button id="cmpBatch">Carregar municípios da seleção</button> <button id="cmpRefresh">Atualizar carregados</button> <button id="cmpStop">Interromper coleta</button>
+<p id="cmpMessage" role="status" aria-live="polite">Exemplo inicial: Canaã dos Carajás / PA. Consulta ao abrir esta aba.</p>
+<p id="cmpClock" class="notice">Aguardando apuração do segundo turno</p>
+<p class="notice warn">Comparações durante a apuração são PROVISÓRIAS. Os votos recebidos são exibidos, mas diferenças de crescimento/queda e rankings ficam suspensos até os dois turnos estarem finalizados. Um primeiro turno com zero votos tem variação percentual indefinida (—).</p>
+<div class="cmp-filters"><label>Pesquisar na tabela<input id="cmpSearch" type="search"></label></div>
+<button id="cmpCsv">Exportar seleção para CSV</button>
+<div class="tableWrap"><table class="table"><thead><tr><th>Localidade</th><th>Candidato</th><th>Votos 1º turno / % válidos</th><th>Votos 2º turno / % válidos</th><th>Diferença</th><th>Variação %</th><th>Diferença em p.p.</th><th>Seções / horário oficial por turno</th></tr></thead><tbody id="cmpBody"></tbody></table></div>
+<button id="cmpPrev">Anterior</button> <span id="cmpPage"></span> <button id="cmpNext">Próxima</button>
+<h3>Votos por turno — página atual</h3><p>Ouro: primeiro turno • Azul: segundo turno. Ausência de dados não é zero votos.</p><div id="cmpBars"></div>
+<h3>Rankings de crescimento e queda</h3><label>Métrica <select id="cmpRankMetric"><option value="diff">Votos absolutos</option><option value="variation">Variação percentual</option></select></label>
+<p id="cmpCoverage" class="notice"></p><div id="cmpRanks"></div><h3>Ranking dos estados — seleção carregada</h3><div id="cmpStateRank"></div>
+</section></section>
 <footer>
   Dados ao vivo de 2026: 2º turno (eleição federal 6258), TSE. Mapa geográfico: malha IBGE compilada por br-geojson (CC0). Histórico 2018/2022: TSE. Pesquisas: Datafolha. O painel separa dado oficial, estimativa e simulação. Em caso de divergência, prevalece o portal oficial do TSE.
   <div class="sourceLinks" style="justify-content:center"><a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener">Resultados TSE</a><a href="https://www.tse.jus.br/" target="_blank" rel="noopener">TSE</a></div>
@@ -359,5 +381,7 @@ setInterval(()=>{if(!S.busy){S.seconds=Math.max(0,S.seconds-1);$('timer').textCo
   document.addEventListener('visibilitychange',updateCountdown);
 })();
 </script>
+<script src="compare-core.js"></script>
+<script src="compare.js"></script>
 </body>
 </html>
