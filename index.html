@@ -46,7 +46,7 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
 <header>
   <div class="header">
     <div><h1>Presidente 2026 — Segundo Turno</h1><div class="sub">Apuração oficial • 2º turno em 25/10 • comparações históricas</div></div>
-    <div class="live"><span id="dot" class="dot"></span><span id="status">Conectando ao TSE…</span><span>•</span><span id="timer">10s</span></div>
+    <div class="live"><span id="dot" class="dot"></span><span id="status">Conectando ao TSE…</span><span>•</span><span id="timer" role="timer" aria-live="off" aria-label="Tempo até a próxima consulta ao TSE">10s</span></div>
   </div>
   <div class="election-countdown">
     <span id="countdownLabel">Faltam para a eleição</span>
@@ -75,12 +75,12 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
     <div class="metric"><div class="label">Regiões lideradas</div><div id="kRegions" class="value">—</div><div class="hint">N, NE, CO, SE e Sul</div></div>
     <div class="metric"><div class="label">Última totalização TSE</div><div id="kTime" class="value">—</div><div id="kDate" class="hint">—</div></div>
     <div class="metric gold"><div class="label">Tempo sem nova totalização</div><div id="kSilence" class="value">—</div><div id="kSilenceHint" class="hint">Contado pelo horário informado pelo TSE</div></div>
-    <div class="metric"><div class="label">Última consulta bem-sucedida</div><div id="kChecked" class="value">—</div><div id="kCheckedHint" class="hint">Consulta ≠ nova totalização</div></div>
+    <div class="metric"><div class="label">Última consulta bem-sucedida</div><div id="kChecked" class="value">—</div><div id="kCheckedHint" class="hint">Consulta ≠ nova totalização • ciclo normal de 10s durante a apuração</div></div>
   </div>
 
   <section class="card">
     <div class="sectionHead">
-      <div><h2>Placar nacional</h2><div id="liveMeta" class="desc">Brasil + exterior • aguardando dados do 2º turno</div></div>
+      <div><h2>Placar nacional</h2><div id="liveMeta" class="desc">Brasil + exterior • aguardando dados do 2º turno</div><div class="desc">Consultas em ciclos de 10 segundos durante a apuração. Isso não significa novos votos a cada consulta: confira o horário real da última totalização.</div></div>
       <button id="refresh" class="btn">Atualizar agora</button>
     </div>
     <div class="progress"><i id="progressBar"></i></div>
@@ -212,6 +212,7 @@ footer{text-align:center;color:var(--mut);font-size:11px;line-height:1.6;margin-
   <div class="sourceLinks" style="justify-content:center"><a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener">Resultados TSE</a><a href="https://www.tse.jus.br/" target="_blank" rel="noopener">TSE</a></div>
 </footer>
 </main>
+<script src="live-poll.js"></script>
 <script>
 (()=>{
 'use strict';
@@ -230,7 +231,7 @@ const HIST={
   2026:{poll:[{name:'Lula',pct:45},{name:'Flávio Bolsonaro',pct:42}]}
 };
 const HISTORY_SEEDS=[]; // Dados do primeiro turno não entram na curva.
-const S={data:null,idg:null,first26:null,seconds:30,states:{},stateIdg:{},states22:{},selectedUf:'pa',view:'live',history:[],sim:{},available:false,configChecked:0,geo:null,munConfig:null,munCache:{},munJob:0,munAbort:null,checkedAt:null};
+const S={data:null,idg:null,first26:null,seconds:10,states:{},stateIdg:{},states22:{},selectedUf:'pa',view:'live',history:[],sim:{},available:false,configChecked:0,geo:null,munConfig:null,munCache:{},munJob:0,munAbort:null,checkedAt:null};
 const $=id=>document.getElementById(id);
 const num=v=>Number(String(v??'0').replace(/\./g,'').replace(',','.'))||0;
 const pnum=v=>{if(v==null||v==='')return 0;if(typeof v==='number')return Math.abs(v)>100?v/100:v;let x=String(v).trim().replace('%','');if(!x)return 0;if(x.includes(',')){const n=Number(x.replace(/\./g,'').replace(',','.'));return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0}const n=Number(x);return Number.isFinite(n)?(Math.abs(n)>100?n/100:n):0};
@@ -342,26 +343,61 @@ async function loadMunicipios(){const uf=S.selectedUf; if(!S.available||!S.state
 $('loadCities').addEventListener('click',loadMunicipios);
 // O tempo no EA20 é de totalização (dt/ht), não o horário de consulta do navegador.
 function tseDate(date,time){const m=String(date||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/),t=String(time||'').match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);if(!m||!t)return null;const d=new Date(`${m[3]}-${m[2]}-${m[1]}T${t[1]}:${t[2]}:${t[3]||'00'}-03:00`);return Number.isNaN(d.getTime())?null:d}
-function updateClocks(){const d=S.data,stamp=d?tseDate(d.dt,d.ht):null,hasVotes=d&&candidates(d).some(c=>num(c.vap)>0);$('kTime').textContent=stamp&&hasVotes?d.ht:'—';$('kDate').textContent=stamp&&hasVotes?d.dt:'Aguardando totalização';const minutes=stamp&&hasVotes?Math.max(0,Math.floor((Date.now()-stamp.getTime())/60000)):null;const days=minutes==null?0:Math.floor(minutes/1440);$('kSilence').textContent=minutes==null?'—':days>0?`${days}d ${Math.floor((minutes%1440)/60)}h`:minutes>=60?`${Math.floor(minutes/60)}h ${minutes%60}min`:`${minutes} min`;$('kSilenceHint').textContent=d?.and==='f'?'Totalização finalizada pelo TSE':minutes==null?'Aguardando primeira totalização':'Desde a última totalização informada pelo TSE';$('kChecked').textContent=S.checkedAt?S.checkedAt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';$('kCheckedHint').textContent='Horário da consulta • não indica novos votos';}
-// O arquivo de configuração sinaliza quando o TSE inclui o pleito federal de 2º turno.
-async function checkAvailability(force=false){const now=Date.now();if(!force&&now-S.configChecked<5*60*1000)return S.available;S.configChecked=now;const r=await fetch('https://resultados.tse.jus.br/oficial/comum/config/ele-c.json',{cache:'no-store'});if(!r.ok)throw Error(`Configuração de eleições: HTTP ${r.status}`);const d=await r.json();S.available=(d.pl||[]).some(pl=>(pl.e||[]).some(e=>String(e.cd)===PRES26.e&&String(e.t)==='2'));return S.available}
+function updateClocks(){const d=S.data,stamp=d?tseDate(d.dt,d.ht):null,hasVotes=d&&candidates(d).some(c=>num(c.vap)>0);$('kTime').textContent=stamp&&hasVotes?d.ht:'—';$('kDate').textContent=stamp&&hasVotes?d.dt:'Aguardando totalização';const minutes=stamp&&hasVotes?Math.max(0,Math.floor((Date.now()-stamp.getTime())/60000)):null;const days=minutes==null?0:Math.floor(minutes/1440);$('kSilence').textContent=minutes==null?'—':days>0?`${days}d ${Math.floor((minutes%1440)/60)}h`:minutes>=60?`${Math.floor(minutes/60)}h ${minutes%60}min`:`${minutes} min`;$('kSilenceHint').textContent=d?.and==='f'?'Totalização finalizada pelo TSE':minutes==null?'Aguardando primeira totalização':'Desde a última totalização informada pelo TSE';$('kChecked').textContent=S.checkedAt?S.checkedAt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'—';$('kCheckedHint').textContent='Consulta ≠ novos votos • horário oficial da totalização acima';}
+const liveClient=LivePoll.client();
+const liveState={hints:new Map(),checked:{},fallbackAt:0,failures:0,nextAt:0};
+function scheduleLive(seconds){S.seconds=Math.max(seconds,liveClient.remaining());liveState.nextAt=Date.now()+S.seconds*1000;$('timer').textContent=S.seconds+'s';clearTimeout(liveState.timer);liveState.timer=setTimeout(tickLive,1000);}
+function tickLive(){if(!S.busy){S.seconds=Math.max(0,Math.ceil((liveState.nextAt-Date.now())/1000));$('timer').textContent=S.seconds+'s';if(S.seconds===0&&!document.hidden){refresh(false);return;}}liveState.timer=setTimeout(tickLive,1000);}
+async function checkAvailability(force=false){
+ if(!force&&S.configChecked&&Date.now()-S.configChecked<300000)return S.available;
+ const d=await liveClient.json('https://resultados.tse.jus.br/oficial/comum/config/ele-c.json');
+ S.available=(d.pl||[]).some(pl=>pl.c==='ele2026'&&(pl.e||[]).some(e=>(String(e.cd)==='6258'&&String(e.t)==='2')||(String(e.cd)==='6257'&&String(e.cdt2)==='6258')));
+ S.configChecked=Date.now();return S.available;
+}
 async function loadFirst26(){if(S.first26)return;try{const r=await fetch(firstEndpoint26(),{cache:'force-cache'});if(!r.ok)return;const d=await r.json();if(String(d.ele)!==PRES26_FIRST)return;S.first26=d;renderHistory();renderPolls();renderSimulation()}catch(e){console.warn('Histórico 1º turno indisponível:',e)}}
-async function load26(force=false){const res=await fetch(endpoint26()+(force?`?v=${Date.now()}`:''),{cache:'no-store'});if(!res.ok)throw new Error(`Brasil: HTTP ${res.status}`);const d=await res.json();if(String(d.ele)!==PRES26.e||String(d.t)!=='2')throw Error('Arquivo não é da eleição presidencial do 2º turno');if(force||S.idg!==d.idg){S.data=d;S.idg=d.idg}return d}
-async function loadState26(uf,force=false){const res=await fetch(stateEndpoint26(uf)+(force?`?v=${Date.now()}`:''),{cache:'no-store'});if(!res.ok)throw new Error(`${uf.toUpperCase()}: HTTP ${res.status}`);const d=await res.json();if(String(d.ele)!==PRES26.e||String(d.t)!=='2')throw Error('Arquivo estadual com eleição ou turno incorreto');if(force||S.stateIdg[uf]!==d.idg){S.states[uf]=d;S.stateIdg[uf]=d.idg}return d}
-async function load22(){const jobs=UFS.map(async m=>{try{const r=await fetch(stateEndpoint22(m.uf),{cache:'force-cache'});if(!r.ok)throw new Error(String(r.status));S.states22[m.uf]=await r.json();return true}catch(e){return false}});const rs=await Promise.all(jobs);const ok=rs.filter(Boolean).length;$('hist2022Status').textContent=`2022: ${ok}/27 UFs carregadas`;renderRegions()}
+function validateLive(d,uf){if(String(d.ele)!=='6258'||String(d.t)!=='2'||d.f!=='o'||d.cdabr!==uf||!d.carg?.some(c=>String(c.cd)==='1')||!candidates(d).length)throw Error('Arquivo presidencial ou localidade incompatível');return d;}
+async function load26(){const d=validateLive(await liveClient.json(endpoint26()),'br');const id=LivePoll.signature(d),changed=id!==S.idg;S.data=d;S.idg=id;S.checkedAt=new Date();return changed;}
+async function loadState26(uf){const d=validateLive(await liveClient.json(stateEndpoint26(uf)),uf);const id=LivePoll.signature(d),changed=id!==S.stateIdg[uf];S.states[uf]=d;S.stateIdg[uf]=id;liveState.checked[uf]=Date.now();return changed;}
+async function updateStates(force=false){
+ const ufs=UFS.map(m=>m.uf);let hints=null,trackingError=null;
+ try{hints=LivePoll.tracker(await liveClient.json(`${BASE26}/6258/dados/br/br-e006258-ab.json`),ufs);}catch(e){trackingError=e;}
+ const fallback=force||!liveState.fallbackAt||Date.now()-liveState.fallbackAt>=LivePoll.RECHECK;
+ const targets=ufs.filter(uf=>hints?LivePoll.due({loaded:!!S.states[uf],previous:liveState.hints.get(uf),current:hints.get(uf),checked:liveState.checked[uf],force}):fallback);
+ if(!hints&&fallback)liveState.fallbackAt=Date.now();
+ let cursor=0,changed=false,errors=0;
+ await Promise.all(Array.from({length:3},async()=>{while(cursor<targets.length){const uf=targets[cursor++];try{changed=(await loadState26(uf))||changed;if(hints)liveState.hints.set(uf,hints.get(uf));}catch(e){errors++;}}}));
+ return {changed,errors,trackingError,downloaded:targets.length-errors,skipped:27-targets.length};
+}
+function renderLiveChanges(nationalChanged,statesChanged){
+ if(nationalChanged){renderLive();renderMath();}
+ if(statesChanged){const focused=document.activeElement?.getAttribute('data-uf');renderMap();renderRegions();renderRankings();renderMath();updateStateLeadKpis();if(focused)document.querySelector(`[data-uf="${focused}"]`)?.focus({preventScroll:true});}
+}
+async function load22(){let cursor=0,ok=0;await Promise.all(Array.from({length:3},async()=>{while(cursor<UFS.length){const m=UFS[cursor++];try{const r=await fetch(stateEndpoint22(m.uf),{cache:'force-cache'});if(!r.ok)throw Error(String(r.status));S.states22[m.uf]=await r.json();ok++;}catch(e){}}}));$('hist2022Status').textContent=`2022: ${ok}/27 UFs carregadas`;renderRegions()}
 async function refresh(force=false){
- if(S.busy)return;S.busy=true;$('refresh').disabled=true;$('status').textContent='Consultando TSE…';
+ if(S.busy)return;
+ if(liveClient.remaining()){scheduleLive(liveClient.remaining());$('status').textContent='Aguardando intervalo de proteção do TSE';return;}
+ S.busy=true;$('refresh').disabled=true;$('timer').textContent='Consultando…';$('status').textContent='Consultando TSE…';
  try{
-  const available=await checkAvailability(force);S.checkedAt=new Date();if(!available){$('dot').className='dot';$('status').textContent='2º turno ainda indisponível no TSE';renderAll();S.seconds=300;return}
-  const jobs=[load26(force),...UFS.map(m=>loadState26(m.uf,force))];const rs=await Promise.allSettled(jobs);const ok=rs.filter(x=>x.status==='fulfilled').length;S.checkedAt=new Date();
-  if(ok){$('dot').className='dot';$('status').textContent=`TSE consultado • ${ok}/${jobs.length} arquivos`;renderAll()}else{$('dot').className='dot err';$('status').textContent='Sem conexão com resultados';$('liveMessage').className='notice err';$('liveMessage').textContent='Os arquivos oficiais do segundo turno ainda não estão disponíveis ou houve erro na conexão. Nenhum voto anterior será usado.'}
-  S.seconds=30;
- }catch(e){$('dot').className='dot err';$('status').textContent='Não foi possível consultar o TSE';$('liveMessage').className='notice err';$('liveMessage').textContent=`Falha ao verificar a configuração oficial: ${e.message}. Tente novamente.`;S.seconds=120}
- finally{$('refresh').disabled=false;S.busy=false;$('timer').textContent=S.seconds+'s';updateClocks()}
+  if(!await checkAvailability(force)){$('status').textContent='2º turno ainda indisponível no TSE';scheduleLive(LivePoll.UNAVAILABLE);return;}
+  const national=await Promise.allSettled([load26()]);
+  const states=await updateStates(force);
+  const nationalOK=national[0].status==='fulfilled';
+  renderLiveChanges(nationalOK&&national[0].value,states.changed);
+  if(nationalOK&&!national[0].value)$('liveMessage').classList.add('hidden');
+  const failed=!nationalOK||states.errors>0||!!states.trackingError;
+  liveState.failures=failed?liveState.failures+1:0;
+  $('dot').className=failed?'dot err':'dot';
+  $('status').textContent=`${nationalOK?'Brasil consultado':'Brasil sem atualização'} • ${states.downloaded} UFs baixadas • ${states.skipped} dispensadas${failed?' • falha parcial; dados anteriores preservados':''}`;
+  if(!nationalOK){$('liveMessage').className='notice err';$('liveMessage').textContent='Falha ao consultar o Brasil. Últimos dados preservados com o horário oficial original.';}
+  scheduleLive(failed?LivePoll.backoff(liveState.failures):S.data?.and==='p'?LivePoll.NORMAL:LivePoll.UNAVAILABLE);
+ }catch(e){liveState.failures++;$('dot').className='dot err';$('status').textContent='Não foi possível consultar o TSE';$('liveMessage').className='notice err';$('liveMessage').textContent=`Falha na consulta: ${e.message}. Dados anteriores preservados.`;scheduleLive(LivePoll.backoff(liveState.failures));}
+ finally{S.busy=false;$('refresh').disabled=false;updateClocks();}
 }
 $('refresh').addEventListener('click',()=>refresh(true));$('resetSim').addEventListener('click',()=>{S.sim={};renderSimulation()});
 nav();renderChart();renderHistory();renderPolls();renderMap();loadGeo();loadFirst26();load22();refresh(true);
-setInterval(()=>{if(!S.busy){S.seconds=Math.max(0,S.seconds-1);$('timer').textContent=S.seconds+'s';if(S.seconds===0)refresh(false)}updateClocks()},1000);
+setInterval(updateClocks,1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!S.busy&&Date.now()>=liveState.nextAt)refresh(false)});
+
 })();
 </script>
 <script>
