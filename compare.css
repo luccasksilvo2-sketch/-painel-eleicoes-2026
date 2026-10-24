@@ -1,0 +1,76 @@
+.cmp-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+.cmp-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.cmp-filters input,
+.cmp-filters select {
+  background: var(--p);
+  color: var(--txt);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 44px;
+  width: 100%;
+  font: inherit;
+}
+.cmp-up {
+  color: #62dfa0;
+}
+.cmp-down {
+  color: #ff9999;
+}
+.cmp-neutral {
+  color: var(--mut);
+}
+#cmpRanks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+#cmpRanks article {
+  background: var(--p);
+  padding: 12px;
+  border-radius: 12px;
+}
+#view-compare {
+  min-width: 0;
+}
+#view-compare .tableWrap {
+  max-width: 100%;
+}
+#view-compare small {
+  line-height: 1.6;
+}
+.cmp-bar {
+  padding: 10px 0;
+  font-size: 12px;
+}
+.cmp-bar i {
+  display: block;
+  height: 10px;
+  background: #d7b463;
+  border-radius: 4px;
+}
+.cmp-bar .second {
+  background: #4ba3ff;
+}
+#cmpClock {
+  overflow-wrap: anywhere;
+}
+#view-compare button {
+  min-height: 44px;
+}
+#view-compare input:focus-visible,
+#view-compare select:focus-visible {
+  outline: 2px solid var(--gold);
+}
